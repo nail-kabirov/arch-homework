@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-app
+spec:
+  selector:
+    matchLabels:
+      app: user-app
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: user-app
+    spec:
+      containers:
+        - image: nailkabirov/arch-hw2:v0.0.2
+          name: user-app
+          env:
+            - name: SERVICE_PORT
+              value: "8000"
+            - name: DB_HOST
+              value: "postgresql"
+            - name: DB_PORT
+              value: "5433"
+            - name: DB_NAME
+              value: "hw2-db"
+            - name: DB_USER
+              value: "hw2-user"
+            - name: DB_PASSWORD
+              value: "hw2-pwd"
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 20

@@ -1,0 +1,37 @@
+## PostgreSQL user (has superuser privileges if username is `postgres`)
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#setting-the-root-password-on-first-run
+postgresqlUsername: hw2-user
+
+## PostgreSQL password
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#setting-the-root-password-on-first-run
+##
+postgresqlPassword: hw2-pwd
+
+## Create a database
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#creating-a-database-on-first-run
+##
+postgresqlDatabase: hw2-db
+
+## PostgreSQL data dir
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
+##
+postgresqlDataDir: /bitnami/postgresql/data
+
+## ConfigMap with PostgreSQL configuration
+## NOTE: This will override postgresqlConfiguration and pgHbaConfiguration
+# configurationConfigMap:
+
+## initdb scripts
+## Specify dictionary of scripts to be run at first boot
+## Alternatively, you can put your scripts under the files/docker-entrypoint-initdb.d directory
+##
+# initdbScripts:
+#   my_init_script.sh: |
+#      #!/bin/sh
+#      echo "Do something."
+
+
+## PostgreSQL service configuration
+service:
+  # clusterIP: None
+  port: 5433
