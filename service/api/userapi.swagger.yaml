@@ -1,0 +1,188 @@
+openapi: 3.0.0
+info:
+  description: |
+    This is simple client API
+  version: "1.0.0"
+  title: User Service
+  contact:
+    email: schetinnikov@gmail.com
+servers:
+  - description: Example Server
+    url: http://arch.homework
+tags:
+  - name: user
+    description: Operations about user
+paths:
+  /api/v1/user:
+    post:
+      tags:
+        - user
+      summary: create user
+      operationId: createUser
+      responses:
+        '200':
+          description: successfull response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserId'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            examples:
+              sample-user:
+                summary: Example
+                value:
+                  username: johndoe589
+                  firstName: John
+                  lastName: Doe
+                  email: bestjohn@doe.com
+                  phone: '+71002003040'
+        description: Created user object
+        required: true
+  /api/v1/users:
+    get:
+      tags:
+        - user
+      operationId: get all users
+      responses:
+        '200':
+          description: users response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/v1/user/{userId}:
+    parameters:
+      - name: userId
+        in: path
+        description: ID of user
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      tags:
+        - user
+      operationId: find user by id
+      responses:
+        '200':
+          description: user response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - user
+      operationId: deleteUser
+      responses:
+        '204':
+          description: user deleted
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - user
+      operationId: updateUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            examples:
+              sample-user:
+                summary: Example
+                value:
+                  firstName: Julie
+                  lastName: Doe
+                  email: bestjohn@doe.com
+                  phone: '+71004242424'
+
+      responses:
+        '200':
+          description: user updated
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    UserId:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+          maxLength: 255
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          format: phone
+    Users:
+      type: array
+      items:
+        $ref: '#/components/schemas/User'
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+  requestBodies:
+    UserArray:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/User'
+      description: List of user object
+      required: true
