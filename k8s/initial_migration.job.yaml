@@ -5,7 +5,7 @@ metadata:
   labels:
     app: migration-v1-job
 spec:
-  backoffLimit: 1
+  backoffLimit: 10
   template:
     metadata:
       name: "migration-v1-job"
@@ -18,6 +18,4 @@ spec:
             - sh
             - "-c"
             - |
-              psql postgresql://hw2-user:hw2-pwd@postgresql:5433/hw2-db  <<'EOF'
-                 CREATE TABLE IF NOT EXISTS users (id UUID primary key, username varchar(255) UNIQUE NOT NULL, first_name varchar NOT NULL, last_name varchar NOT NULL, email varchar NOT NULL, phone varchar NOT NULL);
-              EOF
+              PGCONNECT_TIMEOUT=5 psql postgresql://hw2-user:hw2-pwd@postgresql:5433/hw2-db -c 'CREATE TABLE IF NOT EXISTS users (id UUID primary key, username varchar(255) UNIQUE NOT NULL, first_name varchar NOT NULL, last_name varchar NOT NULL, email varchar NOT NULL, phone varchar NOT NULL)'
