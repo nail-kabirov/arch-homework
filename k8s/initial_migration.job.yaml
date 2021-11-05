@@ -14,27 +14,10 @@ spec:
       containers:
         - name: migration-v1-job
           image: postgres:latest
+          envFrom:
+            - configMapRef:
+                name: user-db-env-configmap
           env:
-            - name: DB_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: user-db-env-configmap
-                  key: DB_HOST
-            - name: DB_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: user-db-env-configmap
-                  key: DB_PORT
-            - name: DB_NAME
-              valueFrom:
-                configMapKeyRef:
-                  name: user-db-env-configmap
-                  key: DB_NAME
-            - name: DB_USER
-              valueFrom:
-                configMapKeyRef:
-                  name: user-db-env-configmap
-                  key: DB_USER
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
