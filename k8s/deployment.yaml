@@ -27,15 +27,30 @@ spec:
             - name: SERVICE_PORT
               value: "8000"
             - name: DB_HOST
-              value: "postgresql"
+              valueFrom:
+                configMapKeyRef:
+                  name: user-db-env-configmap
+                  key: DB_HOST
             - name: DB_PORT
-              value: "5433"
+              valueFrom:
+                configMapKeyRef:
+                  name: user-db-env-configmap
+                  key: DB_PORT
             - name: DB_NAME
-              value: "hw2-db"
+              valueFrom:
+                configMapKeyRef:
+                  name: user-db-env-configmap
+                  key: DB_NAME
             - name: DB_USER
-              value: "hw2-user"
+              valueFrom:
+                configMapKeyRef:
+                  name: user-db-env-configmap
+                  key: DB_USER
             - name: DB_PASSWORD
-              value: "hw2-pwd"
+              valueFrom:
+                secretKeyRef:
+                  name: user-db-env-secret
+                  key: DB_PASSWORD
           ports:
             - containerPort: 8000
           readinessProbe:

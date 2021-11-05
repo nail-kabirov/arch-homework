@@ -14,8 +14,34 @@ spec:
       containers:
         - name: migration-v1-job
           image: postgres:latest
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: user-db-env-configmap
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: user-db-env-configmap
+                  key: DB_PORT
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: user-db-env-configmap
+                  key: DB_NAME
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: user-db-env-configmap
+                  key: DB_USER
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: user-db-env-secret
+                  key: DB_PASSWORD
           command:
             - sh
             - "-c"
             - |
-              PGCONNECT_TIMEOUT=5 psql postgresql://hw2-user:hw2-pwd@postgresql:5433/hw2-db -c 'CREATE TABLE IF NOT EXISTS users (id UUID primary key, username varchar(255) UNIQUE NOT NULL, first_name varchar NOT NULL, last_name varchar NOT NULL, email varchar NOT NULL, phone varchar NOT NULL)'
+              PGCONNECT_TIMEOUT=5 psql postgresql://$DB_USER@$DB_HOST:$DB_PORT/$DB_NAME -c 'CREATE TABLE IF NOT EXISTS users (id UUID primary key, username varchar(255) UNIQUE NOT NULL, first_name varchar NOT NULL, last_name varchar NOT NULL, email varchar NOT NULL, phone varchar NOT NULL)'
