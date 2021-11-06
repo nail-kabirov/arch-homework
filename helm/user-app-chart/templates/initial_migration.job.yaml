@@ -12,7 +12,7 @@ spec:
     spec:
       restartPolicy: Never
       containers:
-        - name: migration-v1-job
+        - name: {{ .Values.init_migrations_job.name }}
           image: postgres:latest
           envFrom:
             - configMapRef:

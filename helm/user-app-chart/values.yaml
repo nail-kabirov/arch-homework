@@ -45,12 +45,12 @@ service:
 app:
   port: 8000
 
-externalPostgresql:
+postgresql:
   postgresqlUsername: hw2-user
   postgresqlPassword: hw2-pwd
   postgresqlDatabase: hw2-db
-  postgresqlHost: "postgresql"
-  postgresqlPort: "5433"
+  service:
+    port: "5433"
 
 ingress:
   enabled: true
