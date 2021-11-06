@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.config.configMapName }}
+data:
+  DB_HOST: "{{ .Values.externalPostgresql.postgresqlHost }}"
+  DB_PORT: "{{ .Values.externalPostgresql.postgresqlPort }}"
+  DB_NAME: "{{ .Values.externalPostgresql.postgresqlDatabase }}"
+  DB_USER: "{{ .Values.externalPostgresql.postgresqlUsername }}"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.config.secretName }}
+type: Opaque
+data:
+  DB_PASSWORD: {{ .Values.externalPostgresql.postgresqlPassword | b64enc | quote }}
