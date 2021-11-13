@@ -5,6 +5,8 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"regexp"
+	"strings"
 
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
@@ -12,6 +14,7 @@ import (
 
 	"arch-homework1/pkg/user/app"
 	"arch-homework1/pkg/user/common/uuid"
+	"arch-homework1/pkg/user/infrastructure/metrics"
 )
 
 const PathPrefix = "/api/v1/"
@@ -28,6 +31,23 @@ const (
 	errorCodeUsernameAlreadyExists = 2
 	errorCodeUsernameTooLong       = 3
 )
+
+func NewEndpointLabelCollector() metrics.EndpointLabelCollector {
+	return endpointLabelCollector{}
+}
+
+type endpointLabelCollector struct {
+}
+
+func (e endpointLabelCollector) EndpointLabelForURI(uri string) string {
+	if strings.HasPrefix(uri, PathPrefix) {
+		r, _ := regexp.Compile("^" + PathPrefix + "user/[a-f0-9-]+$")
+		if r.MatchString(uri) {
+			return specificUserEndpoint
+		}
+	}
+	return uri
+}
 
 func NewServer(userService *app.UserService, logger *logrus.Logger) *Server {
 	return &Server{
@@ -99,7 +119,7 @@ func (s *Server) createUserHandler(w http.ResponseWriter, r *http.Request) error
 	return nil
 }
 
-func (s *Server) getUsersHandler(w http.ResponseWriter, r *http.Request) error {
+func (s *Server) getUsersHandler(w http.ResponseWriter, _ *http.Request) error {
 	users, err := s.userService.FindAll()
 	if err != nil {
 		return err

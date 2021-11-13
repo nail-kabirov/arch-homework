@@ -1,7 +1,7 @@
 all: modules build
 
-DOCKER_IMAGE_NAME=nailkabirov/arch-hw2
-DOCKER_IMAGE_TAG=v0.0.2
+DOCKER_IMAGE_NAME=nailkabirov/arch-hw3
+DOCKER_IMAGE_TAG=v0.0.4
 
 .PHONY: modules
 modules:

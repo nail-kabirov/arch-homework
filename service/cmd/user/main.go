@@ -2,6 +2,7 @@ package main
 
 import (
 	"arch-homework1/pkg/user/app"
+	"arch-homework1/pkg/user/infrastructure/metrics"
 	"arch-homework1/pkg/user/infrastructure/postgres"
 	serverhttp "arch-homework1/pkg/user/infrastructure/transport/http"
 
@@ -39,7 +40,12 @@ func main() {
 	}
 	defer connector.Close()
 
-	server := startServer(":"+cfg.ServicePort, connector, logger)
+	metricsHandler, err := metrics.NewPrometheusMetricsHandler(serverhttp.NewEndpointLabelCollector())
+	if err != nil {
+		logger.Fatal(err)
+	}
+
+	server := startServer(":"+cfg.ServicePort, connector, logger, metricsHandler)
 
 	waitForKillSignal(logger)
 	if err := server.Shutdown(context.Background()); err != nil {
@@ -68,15 +74,23 @@ func waitForKillSignal(logger *logrus.Logger) {
 	logger.Infof("got system signal '%s'", <-sysKillSignal)
 }
 
-func startServer(httpAddress string, connector postgres.Connector, logger *logrus.Logger) *http.Server {
+func startServer(httpAddress string, connector postgres.Connector, logger *logrus.Logger, metricsHandler metrics.PrometheusMetricsHandler) *http.Server {
+	if err := connector.WaitUntilReady(); err != nil {
+		logger.Fatal(err)
+	}
+	userService := app.NewUserService(postgres.NewUSerRepository(connector.Client()))
+	userServer := serverhttp.NewServer(userService, logger)
+
 	router := mux.NewRouter()
 	router.HandleFunc("/health", handleHealth).Methods(http.MethodGet)
 	router.HandleFunc("/ready", handleReady(connector)).Methods(http.MethodGet)
-	serveMux := http.NewServeMux()
-	serveMux.Handle("/", router)
+	router.PathPrefix(serverhttp.PathPrefix).Handler(userServer.MakeHandler())
+
+	metricsHandler.AddMetricsHandler(router, "/metrics")
+	metricsHandler.AddCommonMetricsMiddleware(router)
 
 	server := &http.Server{
-		Handler:      serveMux,
+		Handler:      router,
 		Addr:         httpAddress,
 		ReadTimeout:  ReadTimeout,
 		WriteTimeout: WriteTimeout,
@@ -84,15 +98,6 @@ func startServer(httpAddress string, connector postgres.Connector, logger *logru
 
 	go func() {
 		logger.Fatal(server.ListenAndServe())
-	}()
-
-	go func() {
-		if err := connector.WaitUntilReady(); err != nil {
-			logger.Fatal(err)
-		}
-		userService := app.NewUserService(postgres.NewUSerRepository(connector.Client()))
-		server := serverhttp.NewServer(userService, logger)
-		serveMux.Handle(serverhttp.PathPrefix, server.MakeHandler())
 	}()
 
 	return server

@@ -11,7 +11,7 @@ API сервиса можно посмотреть в файле `service/api/us
 1. Прописать в hosts домен `arch.homework` на ip кластера
 2. При необходимости создать новый namespace и выбрать его, например:
 ```
-kubectl create namespace arch-hw2 && kubectl config set-context --current --namespace=arch-hw2
+kubectl create namespace arch-hw3 && kubectl config set-context --current --namespace=arch-hw3
 ```
 
 ### Установка приложения с помощью helm:
