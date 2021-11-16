@@ -13,6 +13,15 @@ API сервиса можно посмотреть в файле `service/api/us
 ```
 kubectl create namespace arch-hw3 && kubectl config set-context --current --namespace=arch-hw3
 ```
+3. Установить Prometheus и Nginx при отсутствии:
+```
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo add ingress-nginx 
+helm repo update
+
+helm install prom prometheus-community/kube-prometheus-stack -f external/prometheus.yaml --atomic
+helm install nginx ingress-nginx/ingress-nginx -f external/nginx-ingress.yaml --atomic
+``` 
 
 ### Установка приложения с помощью helm:
 ```
@@ -24,8 +33,13 @@ Deployment сервиса же будет ждать окончания выпо
 Также для корректной работы мониторинга выполнения job'а миграции в чарт включены кастомные `ServiceAccount`, `Role` и `RoleBinding`.
 
 # Тестирование сервиса
-В файле `user.postman_collection.json` представлена postman-коллекция с запросами к сервису.
-Можно убедиться в работоспособности вызовом:
+Запустить стресс-тест сервиса:
 ```
-newman run user.postman_collection.json
+external/stress.sh
 ```
+
+Теперь можно открыть графану по адресу [http://localhost:9000](http://localhost:9000) прокинув порт к ней:
+```
+kubectl   port-forward service/prom-grafana 9000:80
+```
+В графане должен появиться dashboard `User-app`

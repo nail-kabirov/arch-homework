@@ -46,11 +46,20 @@ app:
   port: 8000
 
 postgresql:
-  postgresqlUsername: hw2-user
-  postgresqlPassword: hw2-pwd
-  postgresqlDatabase: hw2-db
+  postgresqlUsername: hw-user
+  postgresqlPassword: hw-pwd
+  postgresqlDatabase: hw-db
   service:
     port: "5433"
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      interval: 15s
+
+metrics:
+  serviceMonitor:
+    enabled: true
 
 ingress:
   enabled: true
