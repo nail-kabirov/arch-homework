@@ -1,7 +1,7 @@
 package postgres
 
 import (
-	"arch-homework1/pkg/user/app"
+	"arch-homework5/pkg/user/app"
 
 	"database/sql"
 

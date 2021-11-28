@@ -1,7 +1,7 @@
 package app
 
 import (
-	"arch-homework1/pkg/user/common/uuid"
+	"arch-homework5/pkg/common/uuid"
 
 	"github.com/pkg/errors"
 )

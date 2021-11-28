@@ -1,10 +1,10 @@
 package main
 
 import (
-	"arch-homework1/pkg/user/app"
-	"arch-homework1/pkg/user/infrastructure/metrics"
-	"arch-homework1/pkg/user/infrastructure/postgres"
-	serverhttp "arch-homework1/pkg/user/infrastructure/transport/http"
+	"arch-homework5/pkg/user/app"
+	"arch-homework5/pkg/user/infrastructure/metrics"
+	"arch-homework5/pkg/user/infrastructure/postgres"
+	serverhttp "arch-homework5/pkg/user/infrastructure/transport/http"
 
 	"context"
 	"io"

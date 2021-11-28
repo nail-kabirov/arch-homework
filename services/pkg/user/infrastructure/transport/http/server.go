@@ -1,6 +1,7 @@
 package http
 
 import (
+	"arch-homework5/pkg/common/uuid"
 	"encoding/json"
 	"io"
 	"io/ioutil"
@@ -12,9 +13,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
-	"arch-homework1/pkg/user/app"
-	"arch-homework1/pkg/user/common/uuid"
-	"arch-homework1/pkg/user/infrastructure/metrics"
+	"arch-homework5/pkg/user/app"
+	"arch-homework5/pkg/user/infrastructure/metrics"
 )
 
 const PathPrefix = "/api/v1/"
