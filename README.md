@@ -11,16 +11,14 @@ API сервиса можно посмотреть в файле `service/api/us
 1. Прописать в hosts домен `arch.homework` на ip кластера
 2. При необходимости создать новый namespace и выбрать его, например:
 ```
-kubectl create namespace arch-hw3 && kubectl config set-context --current --namespace=arch-hw3
+kubectl create namespace arch-hw5 && kubectl config set-context --current --namespace=arch-hw5
 ```
 3. Установить Prometheus и Nginx при отсутствии:
 ```
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo add ingress-nginx 
 helm repo update
 
 helm install prom prometheus-community/kube-prometheus-stack -f external/prometheus.yaml --atomic
-helm install nginx ingress-nginx/ingress-nginx -f external/nginx-ingress.yaml --atomic
 ``` 
 
 ### Установка приложения с помощью helm:

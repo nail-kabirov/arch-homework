@@ -1,12 +1,13 @@
 package main
 
 import (
+	"arch-homework5/pkg/auth/app"
+	"arch-homework5/pkg/auth/infrastructure/encoding"
+	"arch-homework5/pkg/auth/infrastructure/postgres"
+	serverhttp "arch-homework5/pkg/auth/infrastructure/transport/http"
 	commonpostgres "arch-homework5/pkg/common/infrastructure/postgres"
 	"arch-homework5/pkg/common/jwtauth"
 	"arch-homework5/pkg/common/metrics"
-	"arch-homework5/pkg/user/app"
-	"arch-homework5/pkg/user/infrastructure/postgres"
-	serverhttp "arch-homework5/pkg/user/infrastructure/transport/http"
 
 	"context"
 	"io"
@@ -42,7 +43,7 @@ func main() {
 	}
 	defer connector.Close()
 
-	metricsHandler, err := metrics.NewPrometheusMetricsHandler(serverhttp.NewEndpointLabelCollector())
+	metricsHandler, err := metrics.NewPrometheusMetricsHandler(metrics.NewDefaultEndpointLabelCollector())
 	if err != nil {
 		logger.Fatal(err)
 	}
@@ -81,9 +82,10 @@ func startServer(cfg *config, connector commonpostgres.Connector, logger *logrus
 	if err := connector.WaitUntilReady(); err != nil {
 		logger.Fatal(err)
 	}
-	userService := app.NewUserService(postgres.NewUserRepository(connector.Client()))
-	tokenParser := jwtauth.NewTokenParser(cfg.JWTSecret)
-	userServer := serverhttp.NewServer(userService, tokenParser, logger)
+	userService := app.NewUserService(postgres.NewUserRepository(connector.Client()), encoding.NewPasswordEncoder())
+	sessionRepo := postgres.NewSessionRepository(connector.Client())
+	tokenGenerator := jwtauth.NewTokenGenerator(cfg.JWTSecret)
+	userServer := serverhttp.NewServer(userService, sessionRepo, tokenGenerator, logger)
 
 	router := mux.NewRouter()
 	router.HandleFunc("/health", handleHealth).Methods(http.MethodGet)

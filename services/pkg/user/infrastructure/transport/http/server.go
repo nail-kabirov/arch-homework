@@ -1,6 +1,8 @@
 package http
 
 import (
+	"arch-homework5/pkg/common/jwtauth"
+	"arch-homework5/pkg/common/metrics"
 	"arch-homework5/pkg/common/uuid"
 	"encoding/json"
 	"io"
@@ -14,23 +16,23 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"arch-homework5/pkg/user/app"
-	"arch-homework5/pkg/user/infrastructure/metrics"
 )
 
 const PathPrefix = "/api/v1/"
 
 const (
-	createUserEndpoint   = PathPrefix + "user"
-	getUsersEndpoint     = PathPrefix + "users"
+	currentUserEndpoint  = PathPrefix + "user"
 	specificUserEndpoint = PathPrefix + "user/{id}"
 )
 
 const (
-	errorCodeUnknown               = 0
-	errorCodeUserNotFound          = 1
-	errorCodeUsernameAlreadyExists = 2
-	errorCodeUsernameTooLong       = 3
+	errorCodeUnknown      = 0
+	errorCodeUserNotFound = 1
 )
+
+const authTokenHeader = "X-Auth-Token"
+
+var errForbidden = errors.New("access forbidden")
 
 func NewEndpointLabelCollector() metrics.EndpointLabelCollector {
 	return endpointLabelCollector{}
@@ -49,26 +51,26 @@ func (e endpointLabelCollector) EndpointLabelForURI(uri string) string {
 	return uri
 }
 
-func NewServer(userService *app.UserService, logger *logrus.Logger) *Server {
+func NewServer(userService *app.UserService, tokenParser jwtauth.TokenParser, logger *logrus.Logger) *Server {
 	return &Server{
 		userService: userService,
+		tokenParser: tokenParser,
 		logger:      logger,
 	}
 }
 
 type Server struct {
 	userService *app.UserService
+	tokenParser jwtauth.TokenParser
 	logger      *logrus.Logger
 }
 
 func (s *Server) MakeHandler() http.Handler {
 	router := mux.NewRouter()
 
-	router.Methods(http.MethodPost).Path(createUserEndpoint).Handler(s.makeHandlerFunc(s.createUserHandler))
-	router.Methods(http.MethodGet).Path(getUsersEndpoint).Handler(s.makeHandlerFunc(s.getUsersHandler))
+	router.Methods(http.MethodGet).Path(currentUserEndpoint).Handler(s.makeHandlerFunc(s.getCurrentUserIDHandler))
 	router.Methods(http.MethodGet).Path(specificUserEndpoint).Handler(s.makeHandlerFunc(s.getUserHandler))
 	router.Methods(http.MethodPut).Path(specificUserEndpoint).Handler(s.makeHandlerFunc(s.updateUserHandler))
-	router.Methods(http.MethodDelete).Path(specificUserEndpoint).Handler(s.makeHandlerFunc(s.deleteUserHandler))
 
 	return router
 }
@@ -101,56 +103,48 @@ func (s *Server) makeHandlerFunc(fn func(http.ResponseWriter, *http.Request) err
 	}
 }
 
-func (s *Server) createUserHandler(w http.ResponseWriter, r *http.Request) error {
-	var info userInfo
-	bytesBody, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		return err
-	}
-	if err = json.Unmarshal(bytesBody, &info); err != nil {
-		return err
-	}
-
-	userID, err := s.userService.Add(app.Username(info.Username), info.FirstName, info.LastName, app.Email(info.Email), app.Phone(info.Phone))
-	if err != nil {
-		return err
-	}
-	writeResponse(w, createdUserInfo{UserID: string(userID)})
-	return nil
-}
-
-func (s *Server) getUsersHandler(w http.ResponseWriter, _ *http.Request) error {
-	users, err := s.userService.FindAll()
+func (s *Server) getCurrentUserIDHandler(w http.ResponseWriter, r *http.Request) error {
+	tokenData, err := s.extractAuthorizationData(r)
 	if err != nil {
 		return err
 	}
 
-	userInfos := make([]userInfo, 0, len(users))
-	for _, user := range users {
-		userInfos = append(userInfos, toUserInfo(user))
-	}
-
-	writeResponse(w, userInfos)
+	writeResponse(w, currentUserInfo{UserID: tokenData.UserID()})
 	return nil
 }
 
 func (s *Server) getUserHandler(w http.ResponseWriter, r *http.Request) error {
+	tokenData, err := s.extractAuthorizationData(r)
+	if err != nil {
+		return err
+	}
 	id, err := getIDFromRequest(r)
 	if err != nil {
 		return err
 	}
-	user, err := s.userService.Find(id)
+	if string(id) != tokenData.UserID() {
+		return errForbidden
+	}
+
+	user, err := s.userService.Get(id)
 	if err != nil {
 		return err
 	}
-	writeResponse(w, toUserInfo(*user))
+	writeResponse(w, toUserInfo(*user, tokenData))
 	return nil
 }
 
 func (s *Server) updateUserHandler(w http.ResponseWriter, r *http.Request) error {
+	tokenData, err := s.extractAuthorizationData(r)
+	if err != nil {
+		return err
+	}
 	id, err := getIDFromRequest(r)
 	if err != nil {
 		return err
+	}
+	if string(id) != tokenData.UserID() {
+		return errForbidden
 	}
 
 	var info userInfoUpdate
@@ -161,13 +155,9 @@ func (s *Server) updateUserHandler(w http.ResponseWriter, r *http.Request) error
 	if err = json.Unmarshal(bytesBody, &info); err != nil {
 		return err
 	}
-	var username *app.Username
 	var email *app.Email
 	var phone *app.Phone
-	if info.Username != nil {
-		usernameValue := app.Username(*info.Username)
-		username = &usernameValue
-	}
+
 	if info.Email != nil {
 		emailValue := app.Email(*info.Email)
 		email = &emailValue
@@ -177,7 +167,7 @@ func (s *Server) updateUserHandler(w http.ResponseWriter, r *http.Request) error
 		phone = &phoneValue
 	}
 
-	err = s.userService.Update(id, username, info.FirstName, info.LastName, email, phone)
+	err = s.userService.Update(id, info.FirstName, info.LastName, email, phone)
 	if err != nil {
 		return err
 	}
@@ -186,17 +176,16 @@ func (s *Server) updateUserHandler(w http.ResponseWriter, r *http.Request) error
 	return nil
 }
 
-func (s *Server) deleteUserHandler(w http.ResponseWriter, r *http.Request) error {
-	id, err := getIDFromRequest(r)
-	if err != nil {
-		return err
+func (s *Server) extractAuthorizationData(r *http.Request) (jwtauth.TokenData, error) {
+	token := r.Header.Get(authTokenHeader)
+	if token == "" {
+		return nil, errForbidden
 	}
-	err = s.userService.Remove(id)
+	tokenData, err := s.tokenParser.ParseToken(token)
 	if err != nil {
-		return err
+		return nil, errors.Wrap(errForbidden, err.Error())
 	}
-	w.WriteHeader(http.StatusNoContent)
-	return nil
+	return tokenData, nil
 }
 
 func getIDFromRequest(r *http.Request) (app.UserID, error) {
@@ -228,12 +217,8 @@ func writeErrorResponse(w http.ResponseWriter, err error) {
 	case app.ErrUserNotFound:
 		info.Code = errorCodeUserNotFound
 		w.WriteHeader(http.StatusNotFound)
-	case app.ErrUsernameAlreadyExists:
-		info.Code = errorCodeUsernameAlreadyExists
-		w.WriteHeader(http.StatusBadRequest)
-	case app.ErrUsernameTooLong:
-		info.Code = errorCodeUsernameTooLong
-		w.WriteHeader(http.StatusBadRequest)
+	case errForbidden:
+		w.WriteHeader(http.StatusForbidden)
 	default:
 		w.WriteHeader(http.StatusInternalServerError)
 	}
@@ -241,10 +226,10 @@ func writeErrorResponse(w http.ResponseWriter, err error) {
 	_, _ = w.Write(js)
 }
 
-func toUserInfo(user app.User) userInfo {
+func toUserInfo(user app.User, tokenData jwtauth.TokenData) userInfo {
 	return userInfo{
 		UserID:    string(user.UserID),
-		Username:  string(user.Username),
+		Login:     tokenData.UserLogin(),
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
 		Email:     string(user.Email),
@@ -259,7 +244,7 @@ type errorInfo struct {
 
 type userInfo struct {
 	UserID    string `json:"id"`
-	Username  string `json:"username"`
+	Login     string `json:"login"`
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
 	Email     string `json:"email"`
@@ -268,13 +253,12 @@ type userInfo struct {
 
 type userInfoUpdate struct {
 	UserID    *string `json:"id"`
-	Username  *string `json:"username"`
 	FirstName *string `json:"firstName"`
 	LastName  *string `json:"lastName"`
 	Email     *string `json:"email"`
 	Phone     *string `json:"phone"`
 }
 
-type createdUserInfo struct {
+type currentUserInfo struct {
 	UserID string `json:"id"`
 }

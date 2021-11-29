@@ -1,9 +1,13 @@
 all: modules build
 
-USER_DOCKER_IMAGE_NAME=nailkabirov/arch-hw5
+AUTH_DOCKER_IMAGE_NAME=nailkabirov/arch-hw5-auth
+AUTH_DOCKER_IMAGE_TAG=v0.0.1
+
+USER_DOCKER_IMAGE_NAME=nailkabirov/arch-hw5-user
 USER_DOCKER_IMAGE_TAG=v0.0.1
 
 APP_NAMES = \
+	auth \
 	user
 
 .PHONY: modules
@@ -11,7 +15,14 @@ modules:
 	go mod tidy
 
 .PHONY: build
-build:
+build: modules check build_auth build_user
+
+.PHONY: build_auth
+build_auth:
+	docker build -t $(AUTH_DOCKER_IMAGE_NAME):$(AUTH_DOCKER_IMAGE_TAG) -f Auth.Dockerfile .
+
+.PHONY: build_user
+build_user:
 	docker build -t $(USER_DOCKER_IMAGE_NAME):$(USER_DOCKER_IMAGE_TAG) -f User.Dockerfile .
 
 .PHONY: build_local

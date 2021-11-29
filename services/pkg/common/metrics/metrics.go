@@ -14,6 +14,17 @@ type EndpointLabelCollector interface {
 	EndpointLabelForURI(uri string) string
 }
 
+func NewDefaultEndpointLabelCollector() EndpointLabelCollector {
+	return defaultEndpointLabelCollector{}
+}
+
+type defaultEndpointLabelCollector struct {
+}
+
+func (d defaultEndpointLabelCollector) EndpointLabelForURI(uri string) string {
+	return uri
+}
+
 func NewPrometheusMetricsHandler(endpointLabelCollector EndpointLabelCollector) (PrometheusMetricsHandler, error) {
 	handler := &prometheusMetricsHandler{
 		endpointLabelCollector: endpointLabelCollector,
