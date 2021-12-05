@@ -1,10 +1,10 @@
 all: modules build
 
 AUTH_DOCKER_IMAGE_NAME=nailkabirov/arch-hw5-auth
-AUTH_DOCKER_IMAGE_TAG=v0.0.1
+AUTH_DOCKER_IMAGE_TAG=v0.0.2
 
 USER_DOCKER_IMAGE_NAME=nailkabirov/arch-hw5-user
-USER_DOCKER_IMAGE_TAG=v0.0.1
+USER_DOCKER_IMAGE_TAG=v0.0.2
 
 APP_NAMES = \
 	auth \
