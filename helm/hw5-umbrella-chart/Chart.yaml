@@ -1,0 +1,17 @@
+apiVersion: v2
+name: hw5-umbrella-chart
+description: Umbrella chart for homework 5
+
+version: 0.1.0
+
+dependencies:
+  - name: postgresql
+    version: 10.x.x
+    repository: https://charts.bitnami.com/bitnami
+    tags:
+      - app-database
+  - name: traefik
+    version: 10.x.x
+    repository: https://helm.traefik.io/traefik
+  - name: user-app-chart
+    version: 0.0.x

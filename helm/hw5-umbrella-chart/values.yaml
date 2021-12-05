@@ -1,0 +1,57 @@
+# Default values for hw5-umbrella-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+ingress:
+  enabled: true
+  host: arch.homework
+
+traefik:
+  nameOverride: traefik
+  fullnameOverride: traefik
+  #  deployment:
+  #    kind: DaemonSet
+  providers:
+    kubernetesCRD:
+      enabled: true
+    kubernetesIngress:
+      enabled: false
+  ports:
+    websecure:
+      expose: false
+  logs:
+    general:
+      level: DEBUG
+    access:
+      enabled: true
+  ingressRoute:
+    dashboard:
+      enabled: false
+#  securityContext:
+#    runAsNonRoot: false
+
+postgresql:
+  postgresqlUsername: hw-user
+  postgresqlPassword: hw-pwd
+  postgresqlDatabase: hw-db
+  service:
+    port: "5433"
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: false
+      interval: 15s
+
+user-app-chart:
+  postgresql:
+    postgresqlUsername: hw-user
+    postgresqlPassword: hw-pwd
+    postgresqlDatabase: hw-db
+    servicePort: "5433"
+
+auth-app-chart:
+  postgresql:
+    postgresqlUsername: hw-user
+    postgresqlPassword: hw-pwd
+    postgresqlDatabase: hw-db
+    servicePort: "5433"

@@ -1,0 +1,28 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: auth-routes
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: PathPrefix(`/auth/api/`) && !PathPrefix(`/auth/api/v1/auth`)
+      services:
+        - name: {{ index .Values "auth-app-chart" "fullnameOverride" }}
+          namespace: {{ .Release.Namespace }}
+          port: {{ index .Values "auth-app-chart" "service" "port" }}
+      middlewares:
+        - name: strip-auth-prefix
+          namespace: {{ .Release.Namespace }}
+    - kind: Rule
+      match: PathPrefix(`/user/api/`)
+      services:
+        - name: {{ index .Values "user-app-chart" "fullnameOverride" }}
+          namespace: {{ .Release.Namespace }}
+          port: {{ index .Values "user-app-chart" "service" "port" }}
+      middlewares:
+        - name: strip-user-prefix
+          namespace: {{ .Release.Namespace }}
+        - name: authentication
+          namespace: {{ .Release.Namespace }}

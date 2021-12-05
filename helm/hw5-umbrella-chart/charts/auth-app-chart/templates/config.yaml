@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.config.configMapName }}
 data:
   DB_HOST: "{{ include "postgresql.fullname" . }}"
-  DB_PORT: "{{ .Values.postgresql.service.port }}"
+  DB_PORT: "{{ .Values.postgresql.servicePort }}"
   DB_NAME: "{{ .Values.postgresql.postgresqlDatabase }}"
   DB_USER: "{{ .Values.postgresql.postgresqlUsername }}"
 ---
