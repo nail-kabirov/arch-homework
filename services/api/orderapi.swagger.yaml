@@ -1,0 +1,155 @@
+openapi: 3.0.0
+info:
+  version: "1.0.0"
+  title: Order Service
+servers:
+  - description: Default Host URL
+    url: http://arch.homework
+tags:
+  - name: order
+    description: Order operations
+paths:
+  /api/v1/order:
+    post:
+      tags:
+        - order
+      summary: create new order
+      operationId: createOrder
+      responses:
+        '200':
+          description: successfull response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                properties:
+                  id:
+                    $ref: '#/components/schemas/OrderId'
+        '400':
+          description: rejected response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: forbidden response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderData'
+        required: true
+  /api/v1/order/{orderId}:
+    parameters:
+      - name: orderId
+        in: path
+        description: ID of order
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      tags:
+        - order
+      summary: get order information
+      operationId: getOrder
+      responses:
+        '200':
+          description: successfull response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '403':
+          description: forbidden response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/v1/orders:
+    get:
+      tags:
+        - order
+      summary: get all orders information
+      operationId: getOrders
+      responses:
+        '200':
+          description: successfull response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Orders'
+        '403':
+          description: forbidden response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    OrderId:
+      type: string
+      format: uuid
+    OrderPrice:
+      type: number
+      multipleOf: 0.01
+      minimum: 0.01
+    OrderData:
+      type: object
+      required:
+        - price
+      properties:
+        price:
+          $ref: '#/components/schemas/OrderPrice'
+    Order:
+      type: object
+      required:
+        - id
+        - price
+      properties:
+        id:
+          $ref: '#/components/schemas/OrderId'
+        price:
+          $ref: '#/components/schemas/OrderPrice'
+        creationDate:
+          type: string
+          format: date-time
+    Orders:
+      type: array
+      items:
+        $ref: '#/components/schemas/Order'
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
