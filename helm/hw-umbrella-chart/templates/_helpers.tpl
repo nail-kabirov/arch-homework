@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "hw5-umbrella-chart.name" -}}
+{{- define "hw-umbrella-chart.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "hw5-umbrella-chart.fullname" -}}
+{{- define "hw-umbrella-chart.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "hw5-umbrella-chart.chart" -}}
+{{- define "hw-umbrella-chart.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "hw5-umbrella-chart.labels" -}}
-helm.sh/chart: {{ include "hw5-umbrella-chart.chart" . }}
-{{ include "hw5-umbrella-chart.selectorLabels" . }}
+{{- define "hw-umbrella-chart.labels" -}}
+helm.sh/chart: {{ include "hw-umbrella-chart.chart" . }}
+{{ include "hw-umbrella-chart.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "hw5-umbrella-chart.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "hw5-umbrella-chart.name" . }}
+{{- define "hw-umbrella-chart.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "hw-umbrella-chart.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "hw5-umbrella-chart.serviceAccountName" -}}
+{{- define "hw-umbrella-chart.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "hw5-umbrella-chart.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "hw-umbrella-chart.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

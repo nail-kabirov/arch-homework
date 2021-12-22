@@ -1,6 +1,6 @@
 apiVersion: v2
-name: hw5-umbrella-chart
-description: Umbrella chart for homework 5
+name: hw-umbrella-chart
+description: Umbrella chart for homework
 
 version: 0.1.0
 

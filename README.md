@@ -20,7 +20,7 @@ kubectl create namespace arch-hw5 && kubectl config set-context --current --name
 
 ### Установка приложения с помощью helm:
 ```
-helm install hw5 helm/hw5-umbrella-chart
+helm install hw7 helm/hw-umbrella-chart
 ```
 # Тестирование
 ### Запуск тестов:
