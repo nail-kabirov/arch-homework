@@ -13,5 +13,10 @@ dependencies:
   - name: traefik
     version: 10.x.x
     repository: https://helm.traefik.io/traefik
+  - name: rabbitmq
+    version: 8.x.x
+    repository: https://charts.bitnami.com/bitnami
+  - name: auth-app-chart
+    version: 0.0.x
   - name: user-app-chart
     version: 0.0.x
