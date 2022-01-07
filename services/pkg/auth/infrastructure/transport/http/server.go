@@ -10,9 +10,9 @@ import (
 	"net/http"
 	"time"
 
-	"arch-homework5/pkg/auth/app"
-	"arch-homework5/pkg/common/jwtauth"
-	"arch-homework5/pkg/common/uuid"
+	"arch-homework/pkg/auth/app"
+	"arch-homework/pkg/common/app/uuid"
+	"arch-homework/pkg/common/jwtauth"
 )
 
 const PathPrefix = "/api/v1/"

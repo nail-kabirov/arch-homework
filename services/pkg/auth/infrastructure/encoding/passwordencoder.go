@@ -4,7 +4,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 
-	"arch-homework5/pkg/auth/app"
+	"arch-homework/pkg/auth/app"
 )
 
 func NewPasswordEncoder() app.PasswordEncoder {

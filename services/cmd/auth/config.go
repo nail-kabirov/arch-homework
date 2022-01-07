@@ -25,4 +25,9 @@ type config struct {
 	DBName     string `envconfig:"db_name" default:"hw-db"`
 	DBUser     string `envconfig:"db_user" default:"hw-user"`
 	DBPassword string `envconfig:"db_password" default:"hw-pwd"`
+
+	RMQHost     string `envconfig:"rmq_host" default:"localhost"`
+	RMQPort     string `envconfig:"rmq_port" default:"5552"`
+	RMQUser     string `envconfig:"rmq_user" default:"rmq_user"`
+	RMQPassword string `envconfig:"rmq_password" default:"rmq_pwd"`
 }

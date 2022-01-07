@@ -1,14 +1,16 @@
 package main
 
 import (
-	"arch-homework5/pkg/auth/app"
-	"arch-homework5/pkg/auth/infrastructure/encoding"
-	"arch-homework5/pkg/auth/infrastructure/postgres"
-	serverhttp "arch-homework5/pkg/auth/infrastructure/transport/http"
-	commonpostgres "arch-homework5/pkg/common/infrastructure/postgres"
-	"arch-homework5/pkg/common/jwtauth"
-	"arch-homework5/pkg/common/metrics"
-
+	"arch-homework/pkg/auth/app"
+	"arch-homework/pkg/auth/infrastructure/encoding"
+	"arch-homework/pkg/auth/infrastructure/postgres"
+	serverhttp "arch-homework/pkg/auth/infrastructure/transport/http"
+	"arch-homework/pkg/common/app/streams"
+	"arch-homework/pkg/common/infrastructure/metrics"
+	commonpostgres "arch-homework/pkg/common/infrastructure/postgres"
+	"arch-homework/pkg/common/infrastructure/storedevent"
+	infrastreams "arch-homework/pkg/common/infrastructure/streams"
+	"arch-homework/pkg/common/jwtauth"
 	"context"
 	"io"
 	"net/http"
@@ -27,6 +29,8 @@ const (
 	WriteTimeout = time.Minute
 )
 
+const serviceName = "auth"
+
 func main() {
 	logger := logrus.New()
 	logger.SetFormatter(&logrus.JSONFormatter{})
@@ -43,12 +47,19 @@ func main() {
 	}
 	defer connector.Close()
 
+	rmqEnv, err := initRabbitMQEnv(cfg)
+	if err != nil {
+		logger.Fatal(err)
+	}
+
 	metricsHandler, err := metrics.NewPrometheusMetricsHandler(metrics.NewDefaultEndpointLabelCollector())
 	if err != nil {
 		logger.Fatal(err)
 	}
 
-	server := startServer(cfg, connector, logger, metricsHandler)
+	ctx, cancelFunc := context.WithCancel(context.Background())
+	defer cancelFunc()
+	server := startServer(ctx, cfg, connector, rmqEnv, logger, metricsHandler)
 
 	waitForKillSignal(logger)
 	if err := server.Shutdown(context.Background()); err != nil {
@@ -71,18 +82,40 @@ func initDBConnector(cfg *config) (commonpostgres.Connector, error) {
 	return connector, err
 }
 
+func initRabbitMQEnv(cfg *config) (streams.Environment, error) {
+	return infrastreams.NewEnvironment(serviceName,
+		streams.Config{
+			Host:     cfg.RMQHost,
+			Port:     cfg.RMQPort,
+			User:     cfg.RMQUser,
+			Password: cfg.RMQPassword,
+		})
+}
+
 func waitForKillSignal(logger *logrus.Logger) {
 	sysKillSignal := make(chan os.Signal, 1)
 	signal.Notify(sysKillSignal, os.Interrupt, syscall.SIGTERM)
 	logger.Infof("got system signal '%s'", <-sysKillSignal)
 }
 
-func startServer(cfg *config, connector commonpostgres.Connector, logger *logrus.Logger, metricsHandler metrics.PrometheusMetricsHandler) *http.Server {
+func startServer(
+	ctx context.Context,
+	cfg *config,
+	connector commonpostgres.Connector,
+	rmqEnv streams.Environment,
+	logger *logrus.Logger,
+	metricsHandler metrics.PrometheusMetricsHandler,
+) *http.Server {
 	httpAddress := ":" + cfg.ServicePort
 	if err := connector.WaitUntilReady(); err != nil {
 		logger.Fatal(err)
 	}
-	userService := app.NewUserService(postgres.NewUserRepository(connector.Client()), encoding.NewPasswordEncoder())
+	dbDep := postgres.NewDBDependency(connector.Client())
+	eventStore, err := storedevent.NewEventSender(ctx, postgres.NewEventStore(connector.Client()), rmqEnv, logger)
+	if err != nil {
+		logger.Fatal(err)
+	}
+	userService := app.NewUserService(dbDep, eventStore, encoding.NewPasswordEncoder())
 	sessionRepo := postgres.NewSessionRepository(connector.Client())
 	tokenGenerator := jwtauth.NewTokenGenerator(cfg.JWTSecret)
 	userServer := serverhttp.NewServer(userService, sessionRepo, tokenGenerator, logger)

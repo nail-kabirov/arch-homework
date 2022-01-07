@@ -1,10 +1,9 @@
 package app
 
 import (
+	"arch-homework/pkg/common/app/uuid"
 	"errors"
 	"time"
-
-	"arch-homework5/pkg/common/uuid"
 )
 
 var ErrSessionNotFound = errors.New("user not found")

@@ -1,20 +1,20 @@
 package postgres
 
 import (
-	"arch-homework5/pkg/user/app"
+	"arch-homework/pkg/common/infrastructure/postgres"
+	"arch-homework/pkg/user/app"
 
 	"database/sql"
 
-	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 )
 
-func NewUserRepository(client *sqlx.DB) app.UserRepository {
+func NewUserRepository(client postgres.Client) app.UserRepository {
 	return &userRepository{client: client}
 }
 
 type userRepository struct {
-	client *sqlx.DB
+	client postgres.Client
 }
 
 func (repo *userRepository) Store(user *app.User) error {

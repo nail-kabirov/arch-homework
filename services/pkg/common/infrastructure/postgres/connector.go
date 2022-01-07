@@ -17,7 +17,7 @@ type Connector interface {
 	Open(dsn DSN) error
 	WaitUntilReady() error
 	Ready() bool
-	Client() *sqlx.DB
+	Client() TransactionalClient
 	Close() error
 }
 
@@ -26,16 +26,16 @@ func NewConnector() Connector {
 }
 
 type connector struct {
-	db    *sqlx.DB
+	db    DBClient
 	ready bool
 }
 
 func (c *connector) Open(dsn DSN) error {
-	var err error
-	c.db, err = sqlx.Open("pgx", dsn.String())
+	db, err := sqlx.Open("pgx", dsn.String())
 	if err != nil {
 		return errors.Wrap(err, "failed to open database")
 	}
+	c.db = NewClient(db)
 	return nil
 }
 
@@ -55,7 +55,7 @@ func (c *connector) Ready() bool {
 	return c.ready
 }
 
-func (c *connector) Client() *sqlx.DB {
+func (c *connector) Client() TransactionalClient {
 	if !c.ready {
 		panic("db client not ready, but requested")
 	}

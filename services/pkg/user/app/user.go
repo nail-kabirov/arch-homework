@@ -1,7 +1,7 @@
 package app
 
 import (
-	"arch-homework5/pkg/common/uuid"
+	"arch-homework/pkg/common/app/uuid"
 	"errors"
 )
 

@@ -1,9 +1,9 @@
 package http
 
 import (
-	"arch-homework5/pkg/common/jwtauth"
-	"arch-homework5/pkg/common/metrics"
-	"arch-homework5/pkg/common/uuid"
+	"arch-homework/pkg/common/app/uuid"
+	"arch-homework/pkg/common/infrastructure/metrics"
+	"arch-homework/pkg/common/jwtauth"
 	"encoding/json"
 	"io"
 	"io/ioutil"
@@ -15,7 +15,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
-	"arch-homework5/pkg/user/app"
+	"arch-homework/pkg/user/app"
 )
 
 const PathPrefix = "/api/v1/"
@@ -184,6 +184,9 @@ func (s *Server) extractAuthorizationData(r *http.Request) (jwtauth.TokenData, e
 	tokenData, err := s.tokenParser.ParseToken(token)
 	if err != nil {
 		return nil, errors.Wrap(errForbidden, err.Error())
+	}
+	if err = uuid.ValidateUUID(tokenData.UserID()); err != nil {
+		return nil, errors.WithStack(err)
 	}
 	return tokenData, nil
 }

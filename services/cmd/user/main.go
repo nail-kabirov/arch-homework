@@ -1,12 +1,12 @@
 package main
 
 import (
-	commonpostgres "arch-homework5/pkg/common/infrastructure/postgres"
-	"arch-homework5/pkg/common/jwtauth"
-	"arch-homework5/pkg/common/metrics"
-	"arch-homework5/pkg/user/app"
-	"arch-homework5/pkg/user/infrastructure/postgres"
-	serverhttp "arch-homework5/pkg/user/infrastructure/transport/http"
+	"arch-homework/pkg/common/infrastructure/metrics"
+	commonpostgres "arch-homework/pkg/common/infrastructure/postgres"
+	"arch-homework/pkg/common/jwtauth"
+	"arch-homework/pkg/user/app"
+	"arch-homework/pkg/user/infrastructure/postgres"
+	serverhttp "arch-homework/pkg/user/infrastructure/transport/http"
 
 	"context"
 	"io"

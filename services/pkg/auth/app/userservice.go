@@ -1,19 +1,27 @@
 package app
 
 import (
-	"github.com/pkg/errors"
+	"arch-homework/pkg/common/app/storedevent"
+	"arch-homework/pkg/common/app/uuid"
 
-	"arch-homework5/pkg/common/uuid"
+	"github.com/pkg/errors"
 )
 
 const maxLoginLen = 255
 
-func NewUserService(userRepo UserRepository, passwordEncoder PasswordEncoder) *UserService {
-	return &UserService{repo: userRepo, passwordEncoder: passwordEncoder}
+func NewUserService(dbDependency DBDependency, eventSender storedevent.Sender, passwordEncoder PasswordEncoder) *UserService {
+	return &UserService{
+		readRepo:        dbDependency.UserRepositoryRead(),
+		trUnitFactory:   dbDependency,
+		eventSender:     eventSender,
+		passwordEncoder: passwordEncoder,
+	}
 }
 
 type UserService struct {
-	repo            UserRepository
+	readRepo        UserRepositoryRead
+	trUnitFactory   TransactionalUnitFactory
+	eventSender     storedevent.Sender
 	passwordEncoder PasswordEncoder
 }
 
@@ -29,19 +37,41 @@ func (s *UserService) Add(login, password string) (UserID, error) {
 		Password: s.passwordEncoder.Encode(password, id),
 	}
 
-	return id, s.repo.Store(&user)
+	err := s.executeInTransaction(func(provider RepositoryProvider) error {
+		err2 := provider.UserRepository().Store(&user)
+		if err2 != nil {
+			return err2
+		}
+
+		event := NewUserRegisteredEvent(id, login)
+		err2 = provider.EventStore().Add(event)
+		if err2 != nil {
+			return err2
+		}
+		s.eventSender.EventStored(event.UID)
+
+		return nil
+	})
+	if err != nil {
+		return "", err
+	}
+
+	s.eventSender.SendStoredEvents()
+	return id, err
 }
 
 func (s *UserService) Remove(id UserID) error {
-	return s.repo.Remove(id)
+	return s.executeInTransaction(func(provider RepositoryProvider) error {
+		return provider.UserRepository().Remove(id)
+	})
 }
 
 func (s *UserService) FindUserByID(id UserID) (*User, error) {
-	return s.repo.FindByID(id)
+	return s.readRepo.FindByID(id)
 }
 
 func (s *UserService) FindUserByLoginAndPassword(login, password string) (*User, error) {
-	user, err := s.repo.FindByLogin(Login(login))
+	user, err := s.readRepo.FindByLogin(Login(login))
 	if err != nil {
 		return nil, err
 	}
@@ -56,11 +86,24 @@ func (s *UserService) checkLogin(login Login) error {
 	if len(login) > maxLoginLen {
 		return errors.Wrapf(ErrLoginTooLong, "max login length (%d symbols) exceeded", maxLoginLen)
 	}
-	if user, err := s.repo.FindByLogin(login); err != ErrUserNotFound || user != nil {
+	if user, err := s.readRepo.FindByLogin(login); err != ErrUserNotFound || user != nil {
 		if user != nil {
 			return ErrLoginAlreadyExists
 		}
 		return err
 	}
 	return nil
+}
+
+func (s *UserService) executeInTransaction(f func(RepositoryProvider) error) (err error) {
+	var trUnit TransactionalUnit
+	trUnit, err = s.trUnitFactory.NewTransactionalUnit()
+	if err != nil {
+		return err
+	}
+	defer func() {
+		err = trUnit.Complete(err)
+	}()
+	err = f(trUnit)
+	return err
 }

@@ -4,18 +4,18 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 
-	"arch-homework5/pkg/auth/app"
+	"arch-homework/pkg/auth/app"
+	"arch-homework/pkg/common/infrastructure/postgres"
 )
 
-func NewSessionRepository(client *sqlx.DB) app.SessionRepository {
+func NewSessionRepository(client postgres.Client) app.SessionRepository {
 	return &sessionRepository{client: client}
 }
 
 type sessionRepository struct {
-	client *sqlx.DB
+	client postgres.Client
 }
 
 func (repo *sessionRepository) Store(session *app.Session) error {

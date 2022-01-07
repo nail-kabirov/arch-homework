@@ -1,7 +1,7 @@
 package app
 
 import (
-	"arch-homework5/pkg/common/uuid"
+	"arch-homework/pkg/common/app/uuid"
 	"errors"
 )
 
@@ -20,9 +20,13 @@ type User struct {
 	Password Password
 }
 
-type UserRepository interface {
-	Store(user *User) error
-	Remove(id UserID) error
+type UserRepositoryRead interface {
 	FindByID(id UserID) (*User, error)
 	FindByLogin(login Login) (*User, error)
+}
+
+type UserRepository interface {
+	UserRepositoryRead
+	Store(user *User) error
+	Remove(id UserID) error
 }
