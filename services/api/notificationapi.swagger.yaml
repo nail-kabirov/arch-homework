@@ -52,14 +52,14 @@ components:
           $ref: '#/components/schemas/NotificationType'
         message:
           type: string
-          enum:
-            - "OrderConfirmed"
-            - "OrderRejected"
         creationDate:
           type: string
           format: date-time
     NotificationType:
       type: string
+      enum:
+        - "OrderConfirmed"
+        - "OrderRejected"
     Error:
       type: object
       required:

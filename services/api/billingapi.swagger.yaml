@@ -119,8 +119,12 @@ components:
     PaymentData:
       type: object
       required:
+        - userId
         - amount
       properties:
+        userId:
+          type: string
+          format: uuid
         amount:
           $ref: '#/components/schemas/Amount'
     Error:
