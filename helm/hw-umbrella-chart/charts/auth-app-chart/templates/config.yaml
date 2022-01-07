@@ -7,6 +7,10 @@ data:
   DB_PORT: "{{ .Values.postgresql.servicePort }}"
   DB_NAME: "{{ .Values.postgresql.postgresqlDatabase }}"
   DB_USER: "{{ .Values.postgresql.postgresqlUsername }}"
+  RMQ_HOST: "{{ include "rabbitmq.fullname" . }}"
+  RMQ_PORT: "{{ .Values.rabbitmq.port }}"
+  RMQ_USER: "{{ .Values.rabbitmq.user }}"
+  RMQ_PASSWORD: "{{ .Values.rabbitmq.password }}"
 ---
 apiVersion: v1
 kind: Secret

@@ -10,7 +10,7 @@ spec:
     metadata:
       name: {{ .Values.init_migrations_job.name }}
     spec:
-      restartPolicy: Never
+      restartPolicy: OnFailure
       containers:
         - name: {{ .Values.init_migrations_job.name }}
           image: postgres:latest
