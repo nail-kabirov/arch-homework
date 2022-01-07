@@ -1,0 +1,53 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+skinparam roundcorner 10
+skinparam ParticipantPadding 10
+
+actor User
+participant "Auth service" as Auth
+participant "Order service" as Order
+participant "Message broker" as Broker
+participant "Billing service" as Billing
+participant "Notification service" as Notification
+
+== Запрос на регистрацию пользователя: ==
+
+User -> Auth : register
+activate Auth
+Auth -> Broker: publish
+hnote right: UserRegistered
+User <-- Auth
+deactivate Auth
+...
+Broker -[#0000FF]-->> Billing: consume
+hnote right: UserRegistered
+activate Billing
+Billing -> Billing: create user account
+deactivate Billing
+
+== Запрос на создание заказа: ==
+User -> Order: create order
+activate Order
+Order -> Billing: process payment
+Order <-- Billing: success or fail
+Order -> Broker: publish
+hnote right
+OrderConfirmed or
+OrderRejected
+end note
+User <-- Order
+deactivate Order
+...
+Broker -[#0000FF]-->> Notification: consume
+hnote right: OrderConfirmed
+activate Notification
+Notification -> : send success notification
+deactivate Notification
+...
+Broker -[#0000FF]-->> Notification: consume
+hnote right: OrderRejected
+activate Notification
+Notification -> : send fail notification
+deactivate Notification
+@enduml

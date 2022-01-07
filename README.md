@@ -1,9 +1,6 @@
 # Описание
 #### Домашнее задание выполнено для курса "[Микросервисная архитектура](https://otus.ru/lessons/microservice-architecture)"
 
-# Схема решения
-![](assets/description.png)
-
 # Сервисы
 Сами сервисы расположен в папке `services`, при запуске в ней команды `make` собирается docker-образы сервисов.
 API сервисов можно посмотреть в файлах `service/api/authapu.swagger.yaml` и `service/api/userapi.swagger.yaml`

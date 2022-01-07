@@ -1,0 +1,41 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+actor User
+participant "Auth service" as Auth
+participant "Order service" as Order
+participant "Billing service" as Billing
+participant "Notification service" as Notification
+
+skinparam roundcorner 10
+skinparam ParticipantPadding 20
+
+== Запрос на регистрацию пользователя: ==
+
+User -> Auth : register
+activate Auth
+Auth -> Billing : create user account
+Auth <-- Billing
+User <-- Auth
+deactivate Auth
+
+== Запрос на создание заказа: ==
+
+User -> Order: create order
+activate Order
+Order -> Billing: process payment
+Order <-- Billing: success or fail
+Order -> Notification: send sucess/fail notification
+Order <-- Notification
+User <-- Order
+deactivate Order
+'alt #LightBlue "Пользователь авторизован"
+'
+'
+'else #Pink "Пользователь не авторизован"
+'
+'
+'end
+
+
+@enduml
