@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "fe59918b-6fad-454c-aeb8-74a5bce0ce0b",
-		"name": "Homework 5",
+		"name": "Homework 7",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -100,12 +100,7 @@
 							"body": "{\n \"code\": 7570250,\n \"message\": \"ad dolor\"\n}"
 						}
 					]
-				}
-			]
-		},
-		{
-			"name": "User1",
-			"item": [
+				},
 				{
 					"name": "Register",
 					"event": [
@@ -258,618 +253,6 @@
 					]
 				},
 				{
-					"name": "Register with same login",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 400\", function () {",
-									"    pm.response.to.have.status(400);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"login\": \"{{login}}\",\n    \"password\": \"{{password}}\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/auth/api/v1/register",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"auth",
-								"api",
-								"v1",
-								"register"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "successfull response",
-							"originalRequest": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"login\": \"user1\",\n    \"password\": \"user1-pwd\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v1/register",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"register"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								}
-							],
-							"cookie": [],
-							"body": "{\n \"id\": \"urn:uuid:75f05586-ccca-6fb5-cfce-373267b7ab4f\"\n}"
-						},
-						{
-							"name": "unexpected error",
-							"originalRequest": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"login\": \"user1\",\n    \"password\": \"user1-pwd\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v1/register",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"register"
-									]
-								}
-							},
-							"status": "Internal Server Error",
-							"code": 500,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								}
-							],
-							"cookie": [],
-							"body": "{\n \"code\": 7570250,\n \"message\": \"ad dolor\"\n}"
-						}
-					]
-				},
-				{
-					"name": "Get current user id without login",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 401\", function () {",
-									"    pm.response.to.have.status(401);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "",
-								"value": "",
-								"type": "text",
-								"disabled": true
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/user/api/v1/user",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"user",
-								"api",
-								"v1",
-								"user"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "successfull response",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/v1/user",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"user"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								}
-							],
-							"cookie": [],
-							"body": "{\n \"id\": \"58437f97-054d-590b-28c6-24a43fa722b8\"\n}"
-						},
-						{
-							"name": "forbidden response",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/v1/user",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"user"
-									]
-								}
-							},
-							"status": "Forbidden",
-							"code": 403,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								}
-							],
-							"cookie": [],
-							"body": "{\n \"code\": 44250960,\n \"message\": \"qui cupidatat esse reprehenderit\"\n}"
-						},
-						{
-							"name": "unexpected error",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/v1/user",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"user"
-									]
-								}
-							},
-							"status": "Internal Server Error",
-							"code": 500,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								}
-							],
-							"cookie": [],
-							"body": "{\n \"code\": 44250960,\n \"message\": \"qui cupidatat esse reprehenderit\"\n}"
-						}
-					]
-				},
-				{
-					"name": "Get user profile without login",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 401\", function () {",
-									"    pm.response.to.have.status(401);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "",
-								"value": "",
-								"type": "text",
-								"disabled": true
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/user/api/v1/user/:userId",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"user",
-								"api",
-								"v1",
-								"user",
-								":userId"
-							],
-							"variable": [
-								{
-									"key": "userId",
-									"value": "{{userId}}",
-									"description": "(Required) ID of user"
-								}
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "user response",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/v1/user/:userId",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"user",
-										":userId"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": "urn:uuid:0dcea8f3-1851-bfa8-810c-a681b53532b8",
-											"description": "(Required) ID of user"
-										}
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								}
-							],
-							"cookie": [],
-							"body": "{\n \"id\": \"16211162-809a-be7a-f035-f6c1446a0ace\",\n \"login\": \"in occaecat Ut con\",\n \"firstName\": \"laborum consectetur\",\n \"lastName\": \"ullamco occaecat nostrud ut\",\n \"email\": \"0fpTANSpQ@JjUAxIHyYVMxeQmjOkmcHuFxBqaWf.ryu\",\n \"phone\": \"commodo cillum nisi\"\n}"
-						},
-						{
-							"name": "forbidden response",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/v1/user/:userId",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"user",
-										":userId"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": "urn:uuid:0dcea8f3-1851-bfa8-810c-a681b53532b8",
-											"description": "(Required) ID of user"
-										}
-									]
-								}
-							},
-							"status": "Forbidden",
-							"code": 403,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								}
-							],
-							"cookie": [],
-							"body": "{\n \"code\": 44250960,\n \"message\": \"qui cupidatat esse reprehenderit\"\n}"
-						},
-						{
-							"name": "unexpected error",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/v1/user/:userId",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"user",
-										":userId"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": "urn:uuid:0dcea8f3-1851-bfa8-810c-a681b53532b8",
-											"description": "(Required) ID of user"
-										}
-									]
-								}
-							},
-							"status": "Internal Server Error",
-							"code": 500,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								}
-							],
-							"cookie": [],
-							"body": "{\n \"code\": 44250960,\n \"message\": \"qui cupidatat esse reprehenderit\"\n}"
-						}
-					]
-				},
-				{
-					"name": "Update user profile without login",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 401\", function () {",
-									"    pm.response.to.have.status(401);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "",
-								"value": "",
-								"type": "text",
-								"disabled": true
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"firstName\": \"New name\",\n    \"lastName\": \"New lastname\",\n    \"email\": \"new@email.com\",\n    \"phone\": \"+71004242424\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/user/api/v1/user/:userId",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"user",
-								"api",
-								"v1",
-								"user",
-								":userId"
-							],
-							"variable": [
-								{
-									"key": "userId",
-									"value": "{{userId}}",
-									"description": "(Required) ID of user"
-								}
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "user updated",
-							"originalRequest": {
-								"method": "PUT",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"firstName\": \"Julie\",\n    \"lastName\": \"Doe\",\n    \"email\": \"bestjohn@doe.com\",\n    \"phone\": \"+71004242424\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v1/user/:userId",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"user",
-										":userId"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": "urn:uuid:0dcea8f3-1851-bfa8-810c-a681b53532b8",
-											"description": "(Required) ID of user"
-										}
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "text",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "text/plain"
-								}
-							],
-							"cookie": [],
-							"body": ""
-						},
-						{
-							"name": "forbidden response",
-							"originalRequest": {
-								"method": "PUT",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"firstName\": \"Julie\",\n    \"lastName\": \"Doe\",\n    \"email\": \"bestjohn@doe.com\",\n    \"phone\": \"+71004242424\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v1/user/:userId",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"user",
-										":userId"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": "urn:uuid:0dcea8f3-1851-bfa8-810c-a681b53532b8",
-											"description": "(Required) ID of user"
-										}
-									]
-								}
-							},
-							"status": "Forbidden",
-							"code": 403,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								}
-							],
-							"cookie": [],
-							"body": "{\n \"code\": 44250960,\n \"message\": \"qui cupidatat esse reprehenderit\"\n}"
-						},
-						{
-							"name": "unexpected error",
-							"originalRequest": {
-								"method": "PUT",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"firstName\": \"Julie\",\n    \"lastName\": \"Doe\",\n    \"email\": \"bestjohn@doe.com\",\n    \"phone\": \"+71004242424\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/v1/user/:userId",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"user",
-										":userId"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": "urn:uuid:0dcea8f3-1851-bfa8-810c-a681b53532b8",
-											"description": "(Required) ID of user"
-										}
-									]
-								}
-							},
-							"status": "Internal Server Error",
-							"code": 500,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								}
-							],
-							"cookie": [],
-							"body": "{\n \"code\": 44250960,\n \"message\": \"qui cupidatat esse reprehenderit\"\n}"
-						}
-					]
-				},
-				{
 					"name": "Login user",
 					"event": [
 						{
@@ -1033,7 +416,7 @@
 					]
 				},
 				{
-					"name": "Get current user id",
+					"name": "initial account status",
 					"event": [
 						{
 							"listen": "test",
@@ -1046,22 +429,32 @@
 									"const schema = {",
 									"    \"type\": \"object\",",
 									"    \"properties\": {",
-									"        \"id\": {",
-									"            \"type\": \"string\"",
+									"        \"amount\": {",
+									"            \"type\": \"number\"",
 									"        }",
 									"    },",
-									"    \"required\": [\"id\"]",
+									"    \"required\": [\"amount\"]",
 									"};",
 									"",
 									"pm.test('Response schema is valid', function() {",
 									"    pm.response.to.have.jsonSchema(schema);",
 									"});",
 									"",
-									"pm.test('Returns current user id', function() {",
-									"    var responseJSON = JSON.parse(responseBody)",
-									"    pm.expect(responseJSON[\"id\"]).to.eql(pm.collectionVariables.get(\"userId\"))",
-									"});",
+									"var responseJSON = JSON.parse(responseBody)",
+									"pm.test(\"Initial account amount should be 0\", function() {",
+									"    pm.expect(responseJSON[\"amount\"]).to.eql(0)",
+									"})",
 									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// wait 1 second to be sure billing account created",
+									"setTimeout(function() {}, 1000);"
 								],
 								"type": "text/javascript"
 							}
@@ -1071,22 +464,21 @@
 						"method": "GET",
 						"header": [
 							{
-								"key": "",
-								"value": "",
-								"type": "text",
-								"disabled": true
+								"key": "X-Auth-Token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDA5NDQ4NjgsInVpZCI6IjVjZTcyYWNkLWYzNGYtNGM4Mi1iZGY0LWZmZjg4ZDEwYmRhZiIsImxvZ2luIjoiT2xpbi5XZWhuZXI3In0.F6Wx7TodBO-E51VuVrF22Xm3OSIzMmkVA7YCAiUKvhE",
+								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "{{baseUrl}}/user/api/v1/user",
+							"raw": "{{baseUrl}}/billing/api/v1/account",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"user",
+								"billing",
 								"api",
 								"v1",
-								"user"
+								"account"
 							]
 						}
 					},
@@ -1097,14 +489,14 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/api/v1/user",
+									"raw": "{{baseUrl}}/api/v1/account",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
 										"v1",
-										"user"
+										"account"
 									]
 								}
 							},
@@ -1118,7 +510,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n \"id\": \"58437f97-054d-590b-28c6-24a43fa722b8\"\n}"
+							"body": "{\n \"amount\": 68993046.62\n}"
 						},
 						{
 							"name": "forbidden response",
@@ -1126,14 +518,14 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/api/v1/user",
+									"raw": "{{baseUrl}}/api/v1/account",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
 										"v1",
-										"user"
+										"account"
 									]
 								}
 							},
@@ -1147,7 +539,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n \"code\": 44250960,\n \"message\": \"qui cupidatat esse reprehenderit\"\n}"
+							"body": "{\n \"code\": 60777507,\n \"message\": \"velit ut deserunt in\"\n}"
 						},
 						{
 							"name": "unexpected error",
@@ -1155,14 +547,14 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/api/v1/user",
+									"raw": "{{baseUrl}}/api/v1/account",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
 										"v1",
-										"user"
+										"account"
 									]
 								}
 							},
@@ -1176,221 +568,18 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n \"code\": 44250960,\n \"message\": \"qui cupidatat esse reprehenderit\"\n}"
+							"body": "{\n \"code\": 60777507,\n \"message\": \"velit ut deserunt in\"\n}"
 						}
 					]
 				},
 				{
-					"name": "Get initial user profile",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"",
-									"const schema = {",
-									"    \"type\": \"object\",",
-									"    \"properties\": {",
-									"        \"id\": {",
-									"            \"type\": \"string\"",
-									"        },",
-									"        \"login\": {",
-									"            \"type\": \"string\"",
-									"        },",
-									"        \"firstName\": {",
-									"            \"type\": \"string\"",
-									"        },",
-									"        \"lastName\": {",
-									"            \"type\": \"string\"",
-									"        },",
-									"        \"email\": {",
-									"            \"type\": \"string\"",
-									"        },",
-									"        \"phone\": {",
-									"            \"type\": \"string\"",
-									"        }",
-									"    },",
-									"    \"required\": [\"id\", \"login\", \"firstName\", \"lastName\", \"email\", \"phone\"]",
-									"};",
-									"",
-									"pm.test('Response schema is valid', function() {",
-									"    pm.response.to.have.jsonSchema(schema);",
-									"});",
-									"",
-									"pm.test('Initial profile data valid', function() {",
-									"    var responseJSON = JSON.parse(responseBody)",
-									"    pm.expect(responseJSON[\"id\"]).to.eql(pm.collectionVariables.get(\"userId\"))",
-									"    pm.expect(responseJSON[\"login\"]).to.eql(pm.collectionVariables.get(\"login\"))",
-									"    pm.expect(responseJSON[\"firstName\"]).empty",
-									"    pm.expect(responseJSON[\"lastName\"]).empty",
-									"    pm.expect(responseJSON[\"email\"]).empty",
-									"    pm.expect(responseJSON[\"phone\"]).empty",
-									"});",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "",
-								"value": "",
-								"type": "text",
-								"disabled": true
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/user/api/v1/user/:userId",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"user",
-								"api",
-								"v1",
-								"user",
-								":userId"
-							],
-							"variable": [
-								{
-									"key": "userId",
-									"value": "{{userId}}",
-									"description": "(Required) ID of user"
-								}
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "user response",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/v1/user/:userId",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"user",
-										":userId"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": "urn:uuid:0dcea8f3-1851-bfa8-810c-a681b53532b8",
-											"description": "(Required) ID of user"
-										}
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								}
-							],
-							"cookie": [],
-							"body": "{\n \"id\": \"16211162-809a-be7a-f035-f6c1446a0ace\",\n \"login\": \"in occaecat Ut con\",\n \"firstName\": \"laborum consectetur\",\n \"lastName\": \"ullamco occaecat nostrud ut\",\n \"email\": \"0fpTANSpQ@JjUAxIHyYVMxeQmjOkmcHuFxBqaWf.ryu\",\n \"phone\": \"commodo cillum nisi\"\n}"
-						},
-						{
-							"name": "forbidden response",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/v1/user/:userId",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"user",
-										":userId"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": "urn:uuid:0dcea8f3-1851-bfa8-810c-a681b53532b8",
-											"description": "(Required) ID of user"
-										}
-									]
-								}
-							},
-							"status": "Forbidden",
-							"code": 403,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								}
-							],
-							"cookie": [],
-							"body": "{\n \"code\": 44250960,\n \"message\": \"qui cupidatat esse reprehenderit\"\n}"
-						},
-						{
-							"name": "unexpected error",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/v1/user/:userId",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"user",
-										":userId"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": "urn:uuid:0dcea8f3-1851-bfa8-810c-a681b53532b8",
-											"description": "(Required) ID of user"
-										}
-									]
-								}
-							},
-							"status": "Internal Server Error",
-							"code": 500,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								}
-							],
-							"cookie": [],
-							"body": "{\n \"code\": 44250960,\n \"message\": \"qui cupidatat esse reprehenderit\"\n}"
-						}
-					]
-				},
-				{
-					"name": "Update user profile",
+					"name": "Top up an account",
 					"event": [
 						{
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.collectionVariables.set(\"firstName\", pm.variables.replaceIn('{{$randomFirstName}}'))",
-									"pm.collectionVariables.set(\"lastName\", pm.variables.replaceIn('{{$randomLastName}}'))",
-									"pm.collectionVariables.set(\"email\", pm.variables.replaceIn('{{$randomEmail}}'))",
-									"pm.collectionVariables.set(\"phone\", pm.variables.replaceIn('{{$randomPhoneNumber}}'))"
+									"pm.collectionVariables.set(\"accountAmount\", pm.variables.replaceIn('1000'))"
 								],
 								"type": "text/javascript"
 							}
@@ -1399,13 +588,9 @@
 							"listen": "test",
 							"script": {
 								"exec": [
+									"",
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
-									"});",
-									"",
-									"",
-									"pm.test('Response is valid', function() {",
-									"    pm.expect(pm.response.text()).to.eql(\"OK\")",
 									"});"
 								],
 								"type": "text/javascript"
@@ -1413,22 +598,21 @@
 						}
 					],
 					"request": {
-						"method": "PUT",
+						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
 								"value": "application/json"
 							},
 							{
-								"key": "",
-								"value": "",
-								"type": "text",
-								"disabled": true
+								"key": "X-Auth-Token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDA5NDQ4NjgsInVpZCI6IjVjZTcyYWNkLWYzNGYtNGM4Mi1iZGY0LWZmZjg4ZDEwYmRhZiIsImxvZ2luIjoiT2xpbi5XZWhuZXI3In0.F6Wx7TodBO-E51VuVrF22Xm3OSIzMmkVA7YCAiUKvhE",
+								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"email\": \"{{email}}\",\n    \"phone\": \"{{phone}}\"\n}",
+							"raw": "{\n    \"amount\": {{accountAmount}}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1436,35 +620,27 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/user/api/v1/user/:userId",
+							"raw": "{{baseUrl}}/billing/api/v1/account",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"user",
+								"billing",
 								"api",
 								"v1",
-								"user",
-								":userId"
-							],
-							"variable": [
-								{
-									"key": "userId",
-									"value": "{{userId}}",
-									"description": "(Required) ID of user"
-								}
+								"account"
 							]
 						}
 					},
 					"response": [
 						{
-							"name": "user updated",
+							"name": "successfull response",
 							"originalRequest": {
-								"method": "PUT",
+								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"firstName\": \"Julie\",\n    \"lastName\": \"Doe\",\n    \"email\": \"bestjohn@doe.com\",\n    \"phone\": \"+71004242424\"\n}",
+									"raw": "{\n    \"amount\": 3191070.63\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1472,22 +648,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseUrl}}/api/v1/user/:userId",
+									"raw": "{{baseUrl}}/api/v1/account",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
 										"v1",
-										"user",
-										":userId"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": "urn:uuid:0dcea8f3-1851-bfa8-810c-a681b53532b8",
-											"description": "(Required) ID of user"
-										}
+										"account"
 									]
 								}
 							},
@@ -1506,11 +674,11 @@
 						{
 							"name": "forbidden response",
 							"originalRequest": {
-								"method": "PUT",
+								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"firstName\": \"Julie\",\n    \"lastName\": \"Doe\",\n    \"email\": \"bestjohn@doe.com\",\n    \"phone\": \"+71004242424\"\n}",
+									"raw": "{\n    \"amount\": 3191070.63\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1518,22 +686,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseUrl}}/api/v1/user/:userId",
+									"raw": "{{baseUrl}}/api/v1/account",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
 										"v1",
-										"user",
-										":userId"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": "urn:uuid:0dcea8f3-1851-bfa8-810c-a681b53532b8",
-											"description": "(Required) ID of user"
-										}
+										"account"
 									]
 								}
 							},
@@ -1547,16 +707,16 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n \"code\": 44250960,\n \"message\": \"qui cupidatat esse reprehenderit\"\n}"
+							"body": "{\n \"code\": 60777507,\n \"message\": \"velit ut deserunt in\"\n}"
 						},
 						{
 							"name": "unexpected error",
 							"originalRequest": {
-								"method": "PUT",
+								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"firstName\": \"Julie\",\n    \"lastName\": \"Doe\",\n    \"email\": \"bestjohn@doe.com\",\n    \"phone\": \"+71004242424\"\n}",
+									"raw": "{\n    \"amount\": 3191070.63\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1564,22 +724,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseUrl}}/api/v1/user/:userId",
+									"raw": "{{baseUrl}}/api/v1/account",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
 										"v1",
-										"user",
-										":userId"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": "urn:uuid:0dcea8f3-1851-bfa8-810c-a681b53532b8",
-											"description": "(Required) ID of user"
-										}
+										"account"
 									]
 								}
 							},
@@ -1593,12 +745,12 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n \"code\": 44250960,\n \"message\": \"qui cupidatat esse reprehenderit\"\n}"
+							"body": "{\n \"code\": 60777507,\n \"message\": \"velit ut deserunt in\"\n}"
 						}
 					]
 				},
 				{
-					"name": "Get user profile",
+					"name": "Account status",
 					"event": [
 						{
 							"listen": "test",
@@ -1611,42 +763,21 @@
 									"const schema = {",
 									"    \"type\": \"object\",",
 									"    \"properties\": {",
-									"        \"id\": {",
-									"            \"type\": \"string\"",
-									"        },",
-									"        \"login\": {",
-									"            \"type\": \"string\"",
-									"        },",
-									"        \"firstName\": {",
-									"            \"type\": \"string\"",
-									"        },",
-									"        \"lastName\": {",
-									"            \"type\": \"string\"",
-									"        },",
-									"        \"email\": {",
-									"            \"type\": \"string\"",
-									"        },",
-									"        \"phone\": {",
-									"            \"type\": \"string\"",
+									"        \"amount\": {",
+									"            \"type\": \"number\"",
 									"        }",
 									"    },",
-									"    \"required\": [\"id\", \"login\", \"firstName\", \"lastName\", \"email\", \"phone\"]",
+									"    \"required\": [\"amount\"]",
 									"};",
 									"",
 									"pm.test('Response schema is valid', function() {",
 									"    pm.response.to.have.jsonSchema(schema);",
 									"});",
 									"",
-									"pm.test('Initial profile data valid', function() {",
-									"    var responseJSON = JSON.parse(responseBody)",
-									"    pm.expect(responseJSON[\"id\"]).to.eql(pm.collectionVariables.get(\"userId\"))",
-									"    pm.expect(responseJSON[\"login\"]).to.eql(pm.collectionVariables.get(\"login\"))",
-									"    pm.expect(responseJSON[\"firstName\"]).to.eql(pm.collectionVariables.get(\"firstName\"))",
-									"    pm.expect(responseJSON[\"lastName\"]).to.eql(pm.collectionVariables.get(\"lastName\"))",
-									"    pm.expect(responseJSON[\"email\"]).to.eql(pm.collectionVariables.get(\"email\"))",
-									"    pm.expect(responseJSON[\"phone\"]).to.eql(pm.collectionVariables.get(\"phone\"))",
-									"});",
-									""
+									"var responseJSON = JSON.parse(responseBody)",
+									"pm.test(\"Account amount should be equal to \" + pm.collectionVariables.get(\"accountAmount\"), function() {",
+									"    pm.expect(responseJSON[\"amount\"]).to.eql(parseFloat(pm.collectionVariables.get(\"accountAmount\")));",
+									"})"
 								],
 								"type": "text/javascript"
 							}
@@ -1656,56 +787,39 @@
 						"method": "GET",
 						"header": [
 							{
-								"key": "",
-								"value": "",
-								"type": "text",
-								"disabled": true
+								"key": "X-Auth-Token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDA5NDQ4NjgsInVpZCI6IjVjZTcyYWNkLWYzNGYtNGM4Mi1iZGY0LWZmZjg4ZDEwYmRhZiIsImxvZ2luIjoiT2xpbi5XZWhuZXI3In0.F6Wx7TodBO-E51VuVrF22Xm3OSIzMmkVA7YCAiUKvhE",
+								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "{{baseUrl}}/user/api/v1/user/:userId",
+							"raw": "{{baseUrl}}/billing/api/v1/account",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"user",
+								"billing",
 								"api",
 								"v1",
-								"user",
-								":userId"
-							],
-							"variable": [
-								{
-									"key": "userId",
-									"value": "{{userId}}",
-									"description": "(Required) ID of user"
-								}
+								"account"
 							]
 						}
 					},
 					"response": [
 						{
-							"name": "user response",
+							"name": "successfull response",
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/api/v1/user/:userId",
+									"raw": "{{baseUrl}}/api/v1/account",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
 										"v1",
-										"user",
-										":userId"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": "urn:uuid:0dcea8f3-1851-bfa8-810c-a681b53532b8",
-											"description": "(Required) ID of user"
-										}
+										"account"
 									]
 								}
 							},
@@ -1719,7 +833,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n \"id\": \"16211162-809a-be7a-f035-f6c1446a0ace\",\n \"login\": \"in occaecat Ut con\",\n \"firstName\": \"laborum consectetur\",\n \"lastName\": \"ullamco occaecat nostrud ut\",\n \"email\": \"0fpTANSpQ@JjUAxIHyYVMxeQmjOkmcHuFxBqaWf.ryu\",\n \"phone\": \"commodo cillum nisi\"\n}"
+							"body": "{\n \"amount\": 68993046.62\n}"
 						},
 						{
 							"name": "forbidden response",
@@ -1727,22 +841,14 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/api/v1/user/:userId",
+									"raw": "{{baseUrl}}/api/v1/account",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
 										"v1",
-										"user",
-										":userId"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": "urn:uuid:0dcea8f3-1851-bfa8-810c-a681b53532b8",
-											"description": "(Required) ID of user"
-										}
+										"account"
 									]
 								}
 							},
@@ -1756,7 +862,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n \"code\": 44250960,\n \"message\": \"qui cupidatat esse reprehenderit\"\n}"
+							"body": "{\n \"code\": 60777507,\n \"message\": \"velit ut deserunt in\"\n}"
 						},
 						{
 							"name": "unexpected error",
@@ -1764,22 +870,14 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/api/v1/user/:userId",
+									"raw": "{{baseUrl}}/api/v1/account",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
 										"v1",
-										"user",
-										":userId"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": "urn:uuid:0dcea8f3-1851-bfa8-810c-a681b53532b8",
-											"description": "(Required) ID of user"
-										}
+										"account"
 									]
 								}
 							},
@@ -1793,12 +891,12 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n \"code\": 44250960,\n \"message\": \"qui cupidatat esse reprehenderit\"\n}"
+							"body": "{\n \"code\": 60777507,\n \"message\": \"velit ut deserunt in\"\n}"
 						}
 					]
 				},
 				{
-					"name": "Logout",
+					"name": "Initial notifications check",
 					"event": [
 						{
 							"listen": "test",
@@ -1807,25 +905,63 @@
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
-									""
+									"",
+									"const schema = {",
+									"    \"type\": \"array\",",
+									"    \"items\": {",
+									"        \"type\": \"object\",",
+									"        \"properties\": {",
+									"            \"type\": {",
+									"                \"type\": \"string\",",
+									"                \"enum\": [",
+									"                    \"OrderConfirmed\",",
+									"                    \"OrderRejected\"",
+									"                ]",
+									"            },",
+									"             \"message\": {",
+									"                \"type\": \"string\"",
+									"            },",
+									"            \"creationDate\": {",
+									"                \"type\": \"string\",",
+									"                \"format\": \"date-time\"",
+									"            }",
+									"        },",
+									"        \"required\": [\"type\", \"message\", \"creationDate\"]",
+									"    }",
+									"};",
+									"",
+									"pm.test('Response schema is valid', function() {",
+									"    pm.response.to.have.jsonSchema(schema);",
+									"});",
+									"",
+									"var responseJSON = JSON.parse(responseBody)",
+									"pm.test(\"Initially should not be any notifications\", function() {",
+									"    pm.expect(responseJSON).to.eql([]);",
+									"})"
 								],
 								"type": "text/javascript"
 							}
 						}
 					],
 					"request": {
-						"method": "POST",
-						"header": [],
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDA5NDQ4NjgsInVpZCI6IjVjZTcyYWNkLWYzNGYtNGM4Mi1iZGY0LWZmZjg4ZDEwYmRhZiIsImxvZ2luIjoiT2xpbi5XZWhuZXI3In0.F6Wx7TodBO-E51VuVrF22Xm3OSIzMmkVA7YCAiUKvhE",
+								"type": "text"
+							}
+						],
 						"url": {
-							"raw": "{{baseUrl}}/auth/api/v1/logout",
+							"raw": "{{baseUrl}}/notification/api/v1/notifications",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"auth",
+								"notification",
 								"api",
 								"v1",
-								"logout"
+								"notifications"
 							]
 						}
 					},
@@ -1833,46 +969,75 @@
 						{
 							"name": "successfull response",
 							"originalRequest": {
-								"method": "POST",
+								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/api/v1/logout",
+									"raw": "{{baseUrl}}/api/v1/notifications",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
 										"v1",
-										"logout"
+										"notifications"
 									]
 								}
 							},
 							"status": "OK",
 							"code": 200,
-							"_postman_previewlanguage": "text",
+							"_postman_previewlanguage": "json",
 							"header": [
 								{
 									"key": "Content-Type",
-									"value": "text/plain"
+									"value": "application/json"
 								}
 							],
 							"cookie": [],
-							"body": ""
+							"body": "[\n {\n  \"type\": \"OrderConfirmed\",\n  \"message\": \"sit\",\n  \"creationDate\": \"1983-05-14T17:08:27.504Z\"\n },\n {\n  \"type\": \"OrderRejected\",\n  \"message\": \"sint est voluptate esse\",\n  \"creationDate\": \"1951-10-24T01:29:46.393Z\"\n }\n]"
 						},
 						{
-							"name": "unexpected error",
+							"name": "forbidden response",
 							"originalRequest": {
-								"method": "POST",
+								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/api/v1/logout",
+									"raw": "{{baseUrl}}/api/v1/notifications",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
 										"v1",
-										"logout"
+										"notifications"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": 49007638,\n \"message\": \"non\"\n}"
+						},
+						{
+							"name": "unexpected error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/notifications",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"notifications"
 									]
 								}
 							},
@@ -1886,17 +1051,12 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n \"code\": 7570250,\n \"message\": \"ad dolor\"\n}"
+							"body": "{\n \"code\": 49007638,\n \"message\": \"non\"\n}"
 						}
 					]
-				}
-			]
-		},
-		{
-			"name": "User2",
-			"item": [
+				},
 				{
-					"name": "Register",
+					"name": "Create affordable order",
 					"event": [
 						{
 							"listen": "test",
@@ -1921,11 +1081,7 @@
 									"});",
 									"",
 									"var responseJSON = JSON.parse(responseBody)",
-									"pm.collectionVariables.set(\"userId2\", responseJSON[\"id\"])",
-									"",
-									"pm.test('Users have different id', function() {",
-									"    pm.expect(responseJSON[\"id\"]).to.not.eql(pm.collectionVariables.get(\"userId\"))",
-									"})"
+									"pm.collectionVariables.set(\"orderId\", responseJSON[\"id\"])"
 								],
 								"type": "text/javascript"
 							}
@@ -1934,8 +1090,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.collectionVariables.set(\"login2\", pm.variables.replaceIn('{{$randomUserName}}'))",
-									"pm.collectionVariables.set(\"password2\", pm.variables.replaceIn('{{$randomPassword}}'))"
+									"pm.collectionVariables.set(\"price\", pm.variables.replaceIn('{{$randomPrice}}'))"
 								],
 								"type": "text/javascript"
 							}
@@ -1947,11 +1102,16 @@
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "X-Auth-Token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDA5NDQ4NjgsInVpZCI6IjVjZTcyYWNkLWYzNGYtNGM4Mi1iZGY0LWZmZjg4ZDEwYmRhZiIsImxvZ2luIjoiT2xpbi5XZWhuZXI3In0.F6Wx7TodBO-E51VuVrF22Xm3OSIzMmkVA7YCAiUKvhE",
+								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"login\": \"{{login2}}\",\n    \"password\": \"{{password2}}\"\n}",
+							"raw": "{\n    \"price\": {{price}}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1959,15 +1119,15 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/auth/api/v1/register",
+							"raw": "{{baseUrl}}/order/api/v1/order",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"auth",
+								"order",
 								"api",
 								"v1",
-								"register"
+								"order"
 							]
 						}
 					},
@@ -1979,7 +1139,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"login\": \"user1\",\n    \"password\": \"user1-pwd\"\n}",
+									"raw": "{\n    \"price\": 89087069.42\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1987,14 +1147,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseUrl}}/api/v1/register",
+									"raw": "{{baseUrl}}/api/v1/order",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
 										"v1",
-										"register"
+										"order"
 									]
 								}
 							},
@@ -2008,7 +1168,83 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n \"id\": \"urn:uuid:75f05586-ccca-6fb5-cfce-373267b7ab4f\"\n}"
+							"body": "{\n \"id\": \"urn:uuid:b6a45308-b64a-5865-cb83-8527e8e5d575\"\n}"
+						},
+						{
+							"name": "rejected response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"price\": 89087069.42\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/order",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"order"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": -21872015,\n \"message\": \"irure nisi\"\n}"
+						},
+						{
+							"name": "forbidden response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"price\": 89087069.42\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/order",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"order"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": -21872015,\n \"message\": \"irure nisi\"\n}"
 						},
 						{
 							"name": "unexpected error",
@@ -2017,7 +1253,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"login\": \"user1\",\n    \"password\": \"user1-pwd\"\n}",
+									"raw": "{\n    \"price\": 89087069.42\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2025,14 +1261,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseUrl}}/api/v1/register",
+									"raw": "{{baseUrl}}/api/v1/order",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
 										"v1",
-										"register"
+										"order"
 									]
 								}
 							},
@@ -2046,12 +1282,12 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n \"code\": 7570250,\n \"message\": \"ad dolor\"\n}"
+							"body": "{\n \"code\": -21872015,\n \"message\": \"irure nisi\"\n}"
 						}
 					]
 				},
 				{
-					"name": "Login user",
+					"name": "Get order information",
 					"event": [
 						{
 							"listen": "test",
@@ -2060,39 +1296,60 @@
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
-									""
+									"",
+									"const schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"id\": {",
+									"            \"type\": \"string\",",
+									"            \"format\": \"uuid\"",
+									"        },",
+									"        \"price\": {",
+									"            \"type\": \"number\"",
+									"        },",
+									"        \"creationDate\": {",
+									"            \"type\": \"string\",",
+									"            \"format\": \"date-time\"",
+									"        }",
+									"    },",
+									"    \"required\": [\"id\", \"price\"]",
+									"};",
+									"",
+									"pm.test('Response schema is valid', function() {",
+									"    pm.response.to.have.jsonSchema(schema);",
+									"});",
+									"",
+									"var responseJSON = JSON.parse(responseBody)",
+									"pm.test(\"Order information valid\", function() {",
+									"    pm.expect(responseJSON[\"id\"]).to.eql(pm.collectionVariables.get(\"orderId\"));",
+									"    pm.expect(responseJSON[\"price\"]).to.eql(parseFloat(pm.collectionVariables.get(\"price\")));",
+									"})"
 								],
 								"type": "text/javascript"
 							}
 						}
 					],
 					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"login\": \"{{login2}}\",\n    \"password\": \"{{password2}}\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
+						"method": "GET",
+						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/auth/api/v1/login",
+							"raw": "{{baseUrl}}/order/api/v1/order/:orderId",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"auth",
+								"order",
 								"api",
 								"v1",
-								"login"
+								"order",
+								":orderId"
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": "{{orderId}}",
+									"description": "(Required) ID of order"
+								}
 							]
 						}
 					},
@@ -2100,102 +1357,99 @@
 						{
 							"name": "successfull response",
 							"originalRequest": {
-								"method": "POST",
+								"method": "GET",
 								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"login\": \"user1\",\n    \"password\": \"user1-pwd\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
 								"url": {
-									"raw": "{{baseUrl}}/api/v1/login",
+									"raw": "{{baseUrl}}/api/v1/order/:orderId",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
 										"v1",
-										"login"
+										"order",
+										":orderId"
+									],
+									"variable": [
+										{
+											"key": "orderId",
+											"value": "urn:uuid:4cfa949b-009a-1a5a-e89c-b476c7e64359",
+											"description": "(Required) ID of order"
+										}
 									]
 								}
 							},
 							"status": "OK",
 							"code": 200,
-							"_postman_previewlanguage": "text",
+							"_postman_previewlanguage": "json",
 							"header": [
 								{
 									"key": "Content-Type",
-									"value": "text/plain"
+									"value": "application/json"
 								}
 							],
 							"cookie": [],
-							"body": ""
+							"body": "{\n \"id\": \"0d01af4a-84b2-9a48-579e-79f7acd9bca3\",\n \"price\": 16084202.99,\n \"creationDate\": \"1964-02-03T12:09:40.897Z\"\n}"
 						},
 						{
-							"name": "bad request",
+							"name": "forbidden response",
 							"originalRequest": {
-								"method": "POST",
+								"method": "GET",
 								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"login\": \"user1\",\n    \"password\": \"user1-pwd\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
 								"url": {
-									"raw": "{{baseUrl}}/api/v1/login",
+									"raw": "{{baseUrl}}/api/v1/order/:orderId",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
 										"v1",
-										"login"
+										"order",
+										":orderId"
+									],
+									"variable": [
+										{
+											"key": "orderId",
+											"value": "urn:uuid:4cfa949b-009a-1a5a-e89c-b476c7e64359",
+											"description": "(Required) ID of order"
+										}
 									]
 								}
 							},
-							"status": "Bad Request",
-							"code": 400,
-							"_postman_previewlanguage": "text",
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
 							"header": [
 								{
 									"key": "Content-Type",
-									"value": "text/plain"
+									"value": "application/json"
 								}
 							],
 							"cookie": [],
-							"body": ""
+							"body": "{\n \"code\": -21872015,\n \"message\": \"irure nisi\"\n}"
 						},
 						{
 							"name": "unexpected error",
 							"originalRequest": {
-								"method": "POST",
+								"method": "GET",
 								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"login\": \"user1\",\n    \"password\": \"user1-pwd\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
 								"url": {
-									"raw": "{{baseUrl}}/api/v1/login",
+									"raw": "{{baseUrl}}/api/v1/order/:orderId",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
 										"v1",
-										"login"
+										"order",
+										":orderId"
+									],
+									"variable": [
+										{
+											"key": "orderId",
+											"value": "urn:uuid:4cfa949b-009a-1a5a-e89c-b476c7e64359",
+											"description": "(Required) ID of order"
+										}
 									]
 								}
 							},
@@ -2209,21 +1463,40 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n \"code\": 7570250,\n \"message\": \"ad dolor\"\n}"
+							"body": "{\n \"code\": -21872015,\n \"message\": \"irure nisi\"\n}"
 						}
 					]
 				},
 				{
-					"name": "Get user1 profile",
+					"name": "Changed account status",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 403\", function () {",
-									"    pm.response.to.have.status(403);",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
 									"});",
-									""
+									"",
+									"const schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"amount\": {",
+									"            \"type\": \"number\"",
+									"        }",
+									"    },",
+									"    \"required\": [\"amount\"]",
+									"};",
+									"",
+									"pm.test('Response schema is valid', function() {",
+									"    pm.response.to.have.jsonSchema(schema);",
+									"});",
+									"",
+									"var responseJSON = JSON.parse(responseBody)",
+									"pm.test(\"Account amount reduced to order price\", function() {",
+									"    var expectedPrice = parseFloat(pm.collectionVariables.get(\"accountAmount\"))-parseFloat(pm.collectionVariables.get(\"price\"));",
+									"    pm.expect(responseJSON[\"amount\"]).to.eql(parseFloat(expectedPrice.toFixed(2)));",
+									"})"
 								],
 								"type": "text/javascript"
 							}
@@ -2233,56 +1506,39 @@
 						"method": "GET",
 						"header": [
 							{
-								"key": "",
-								"value": "",
-								"type": "text",
-								"disabled": true
+								"key": "X-Auth-Token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDA5NDQ4NjgsInVpZCI6IjVjZTcyYWNkLWYzNGYtNGM4Mi1iZGY0LWZmZjg4ZDEwYmRhZiIsImxvZ2luIjoiT2xpbi5XZWhuZXI3In0.F6Wx7TodBO-E51VuVrF22Xm3OSIzMmkVA7YCAiUKvhE",
+								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "{{baseUrl}}/user/api/v1/user/:userId",
+							"raw": "{{baseUrl}}/billing/api/v1/account",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"user",
+								"billing",
 								"api",
 								"v1",
-								"user",
-								":userId"
-							],
-							"variable": [
-								{
-									"key": "userId",
-									"value": "{{userId}}",
-									"description": "(Required) ID of user"
-								}
+								"account"
 							]
 						}
 					},
 					"response": [
 						{
-							"name": "user response",
+							"name": "successfull response",
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/api/v1/user/:userId",
+									"raw": "{{baseUrl}}/api/v1/account",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
 										"v1",
-										"user",
-										":userId"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": "urn:uuid:0dcea8f3-1851-bfa8-810c-a681b53532b8",
-											"description": "(Required) ID of user"
-										}
+										"account"
 									]
 								}
 							},
@@ -2296,7 +1552,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n \"id\": \"16211162-809a-be7a-f035-f6c1446a0ace\",\n \"login\": \"in occaecat Ut con\",\n \"firstName\": \"laborum consectetur\",\n \"lastName\": \"ullamco occaecat nostrud ut\",\n \"email\": \"0fpTANSpQ@JjUAxIHyYVMxeQmjOkmcHuFxBqaWf.ryu\",\n \"phone\": \"commodo cillum nisi\"\n}"
+							"body": "{\n \"amount\": 68993046.62\n}"
 						},
 						{
 							"name": "forbidden response",
@@ -2304,22 +1560,14 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/api/v1/user/:userId",
+									"raw": "{{baseUrl}}/api/v1/account",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
 										"v1",
-										"user",
-										":userId"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": "urn:uuid:0dcea8f3-1851-bfa8-810c-a681b53532b8",
-											"description": "(Required) ID of user"
-										}
+										"account"
 									]
 								}
 							},
@@ -2333,7 +1581,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n \"code\": 44250960,\n \"message\": \"qui cupidatat esse reprehenderit\"\n}"
+							"body": "{\n \"code\": 60777507,\n \"message\": \"velit ut deserunt in\"\n}"
 						},
 						{
 							"name": "unexpected error",
@@ -2341,22 +1589,14 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/api/v1/user/:userId",
+									"raw": "{{baseUrl}}/api/v1/account",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
 										"v1",
-										"user",
-										":userId"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": "urn:uuid:0dcea8f3-1851-bfa8-810c-a681b53532b8",
-											"description": "(Required) ID of user"
-										}
+										"account"
 									]
 								}
 							},
@@ -2370,55 +1610,204 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n \"code\": 44250960,\n \"message\": \"qui cupidatat esse reprehenderit\"\n}"
+							"body": "{\n \"code\": 60777507,\n \"message\": \"velit ut deserunt in\"\n}"
 						}
 					]
 				},
 				{
-					"name": "Update user1 profile",
+					"name": "Check user notifications",
 					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"pm.collectionVariables.set(\"firstName\", pm.variables.replaceIn('{{$randomFirstName}}'))",
-									"pm.collectionVariables.set(\"lastName\", pm.variables.replaceIn('{{$randomLastName}}'))",
-									"pm.collectionVariables.set(\"email\", pm.variables.replaceIn('{{$randomEmail}}'))",
-									"pm.collectionVariables.set(\"phone\", pm.variables.replaceIn('{{$randomPhoneNumber}}'))"
-								],
-								"type": "text/javascript"
-							}
-						},
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 403\", function () {",
-									"    pm.response.to.have.status(403);",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
 									"});",
-									""
+									"",
+									"const schema = {",
+									"    \"type\": \"array\",",
+									"    \"items\": {",
+									"        \"type\": \"object\",",
+									"        \"properties\": {",
+									"            \"type\": {",
+									"                \"type\": \"string\",",
+									"                \"enum\": [",
+									"                    \"OrderConfirmed\",",
+									"                    \"OrderRejected\"",
+									"                ]",
+									"            },",
+									"             \"message\": {",
+									"                \"type\": \"string\"",
+									"            },",
+									"            \"creationDate\": {",
+									"                \"type\": \"string\",",
+									"                \"format\": \"date-time\"",
+									"            }",
+									"        },",
+									"        \"required\": [\"type\", \"message\", \"creationDate\"]",
+									"    }",
+									"};",
+									"",
+									"pm.test('Response schema is valid', function() {",
+									"    pm.response.to.have.jsonSchema(schema);",
+									"});",
+									"",
+									"var responseJSON = JSON.parse(responseBody)",
+									"pm.test(\"Should be one 'OrderConfirmed' notification\", function() {",
+									"    pm.expect(responseJSON.length).to.eql(1);",
+									"    var n = responseJSON[0]",
+									"    pm.expect(n[\"type\"]).to.eql(\"OrderConfirmed\")",
+									"    pm.expect(n[\"message\"].includes(pm.collectionVariables.get(\"orderId\"))).to.eql(true);",
+									"})"
 								],
 								"type": "text/javascript"
 							}
 						}
 					],
 					"request": {
-						"method": "PUT",
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDA5NDQ4NjgsInVpZCI6IjVjZTcyYWNkLWYzNGYtNGM4Mi1iZGY0LWZmZjg4ZDEwYmRhZiIsImxvZ2luIjoiT2xpbi5XZWhuZXI3In0.F6Wx7TodBO-E51VuVrF22Xm3OSIzMmkVA7YCAiUKvhE",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/notification/api/v1/notifications",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"notification",
+								"api",
+								"v1",
+								"notifications"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "successfull response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/notifications",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"notifications"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n {\n  \"type\": \"OrderConfirmed\",\n  \"message\": \"sit\",\n  \"creationDate\": \"1983-05-14T17:08:27.504Z\"\n },\n {\n  \"type\": \"OrderRejected\",\n  \"message\": \"sint est voluptate esse\",\n  \"creationDate\": \"1951-10-24T01:29:46.393Z\"\n }\n]"
+						},
+						{
+							"name": "forbidden response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/notifications",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"notifications"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": 49007638,\n \"message\": \"non\"\n}"
+						},
+						{
+							"name": "unexpected error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/notifications",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"notifications"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": 49007638,\n \"message\": \"non\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Create unaffordable order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
 								"value": "application/json"
 							},
 							{
-								"key": "",
-								"value": "",
-								"type": "text",
-								"disabled": true
+								"key": "X-Auth-Token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDA5NDQ4NjgsInVpZCI6IjVjZTcyYWNkLWYzNGYtNGM4Mi1iZGY0LWZmZjg4ZDEwYmRhZiIsImxvZ2luIjoiT2xpbi5XZWhuZXI3In0.F6Wx7TodBO-E51VuVrF22Xm3OSIzMmkVA7YCAiUKvhE",
+								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"firstName\": \"New name\",\n    \"lastName\": \"New lastname\",\n    \"email\": \"new@email.com\",\n    \"phone\": \"+71004242424\"\n}",
+							"raw": "{\n    \"price\": {{accountAmount}}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2426,35 +1815,27 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/user/api/v1/user/:userId",
+							"raw": "{{baseUrl}}/order/api/v1/order",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"user",
+								"order",
 								"api",
 								"v1",
-								"user",
-								":userId"
-							],
-							"variable": [
-								{
-									"key": "userId",
-									"value": "{{userId}}",
-									"description": "(Required) ID of user"
-								}
+								"order"
 							]
 						}
 					},
 					"response": [
 						{
-							"name": "user updated",
+							"name": "successfull response",
 							"originalRequest": {
-								"method": "PUT",
+								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"firstName\": \"Julie\",\n    \"lastName\": \"Doe\",\n    \"email\": \"bestjohn@doe.com\",\n    \"phone\": \"+71004242424\"\n}",
+									"raw": "{\n    \"price\": 89087069.42\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2462,45 +1843,37 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseUrl}}/api/v1/user/:userId",
+									"raw": "{{baseUrl}}/api/v1/order",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
 										"v1",
-										"user",
-										":userId"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": "urn:uuid:0dcea8f3-1851-bfa8-810c-a681b53532b8",
-											"description": "(Required) ID of user"
-										}
+										"order"
 									]
 								}
 							},
 							"status": "OK",
 							"code": 200,
-							"_postman_previewlanguage": "text",
+							"_postman_previewlanguage": "json",
 							"header": [
 								{
 									"key": "Content-Type",
-									"value": "text/plain"
+									"value": "application/json"
 								}
 							],
 							"cookie": [],
-							"body": ""
+							"body": "{\n \"id\": \"urn:uuid:b6a45308-b64a-5865-cb83-8527e8e5d575\"\n}"
 						},
 						{
-							"name": "forbidden response",
+							"name": "rejected response",
 							"originalRequest": {
-								"method": "PUT",
+								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"firstName\": \"Julie\",\n    \"lastName\": \"Doe\",\n    \"email\": \"bestjohn@doe.com\",\n    \"phone\": \"+71004242424\"\n}",
+									"raw": "{\n    \"price\": 89087069.42\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2508,22 +1881,52 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseUrl}}/api/v1/user/:userId",
+									"raw": "{{baseUrl}}/api/v1/order",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
 										"v1",
-										"user",
-										":userId"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": "urn:uuid:0dcea8f3-1851-bfa8-810c-a681b53532b8",
-											"description": "(Required) ID of user"
+										"order"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": -21872015,\n \"message\": \"irure nisi\"\n}"
+						},
+						{
+							"name": "forbidden response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"price\": 89087069.42\n}",
+									"options": {
+										"raw": {
+											"language": "json"
 										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/order",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"order"
 									]
 								}
 							},
@@ -2537,16 +1940,16 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n \"code\": 44250960,\n \"message\": \"qui cupidatat esse reprehenderit\"\n}"
+							"body": "{\n \"code\": -21872015,\n \"message\": \"irure nisi\"\n}"
 						},
 						{
 							"name": "unexpected error",
 							"originalRequest": {
-								"method": "PUT",
+								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"firstName\": \"Julie\",\n    \"lastName\": \"Doe\",\n    \"email\": \"bestjohn@doe.com\",\n    \"phone\": \"+71004242424\"\n}",
+									"raw": "{\n    \"price\": 89087069.42\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2554,22 +1957,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseUrl}}/api/v1/user/:userId",
+									"raw": "{{baseUrl}}/api/v1/order",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"api",
 										"v1",
-										"user",
-										":userId"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": "urn:uuid:0dcea8f3-1851-bfa8-810c-a681b53532b8",
-											"description": "(Required) ID of user"
-										}
+										"order"
 									]
 								}
 							},
@@ -2583,7 +1978,321 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n \"code\": 44250960,\n \"message\": \"qui cupidatat esse reprehenderit\"\n}"
+							"body": "{\n \"code\": -21872015,\n \"message\": \"irure nisi\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Account status not changed",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"amount\": {",
+									"            \"type\": \"number\"",
+									"        }",
+									"    },",
+									"    \"required\": [\"amount\"]",
+									"};",
+									"",
+									"pm.test('Response schema is valid', function() {",
+									"    pm.response.to.have.jsonSchema(schema);",
+									"});",
+									"",
+									"var responseJSON = JSON.parse(responseBody)",
+									"pm.test(\"Account amount not changed\", function() {",
+									"    expectedPrice = parseFloat(pm.collectionVariables.get(\"accountAmount\"))-parseFloat(pm.collectionVariables.get(\"price\"));",
+									"    pm.expect(responseJSON[\"amount\"]).to.eql(parseFloat(expectedPrice.toFixed(2)));",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDA5NDQ4NjgsInVpZCI6IjVjZTcyYWNkLWYzNGYtNGM4Mi1iZGY0LWZmZjg4ZDEwYmRhZiIsImxvZ2luIjoiT2xpbi5XZWhuZXI3In0.F6Wx7TodBO-E51VuVrF22Xm3OSIzMmkVA7YCAiUKvhE",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/billing/api/v1/account",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"billing",
+								"api",
+								"v1",
+								"account"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "successfull response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/account",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"account"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"amount\": 68993046.62\n}"
+						},
+						{
+							"name": "forbidden response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/account",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"account"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": 60777507,\n \"message\": \"velit ut deserunt in\"\n}"
+						},
+						{
+							"name": "unexpected error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/account",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"account"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": 60777507,\n \"message\": \"velit ut deserunt in\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Check user notifications",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const schema = {",
+									"    \"type\": \"array\",",
+									"    \"items\": {",
+									"        \"type\": \"object\",",
+									"        \"properties\": {",
+									"            \"type\": {",
+									"                \"type\": \"string\",",
+									"                \"enum\": [",
+									"                    \"OrderConfirmed\",",
+									"                    \"OrderRejected\"",
+									"                ]",
+									"            },",
+									"             \"message\": {",
+									"                \"type\": \"string\"",
+									"            },",
+									"            \"creationDate\": {",
+									"                \"type\": \"string\",",
+									"                \"format\": \"date-time\"",
+									"            }",
+									"        },",
+									"        \"required\": [\"type\", \"message\", \"creationDate\"]",
+									"    }",
+									"};",
+									"",
+									"pm.test('Response schema is valid', function() {",
+									"    pm.response.to.have.jsonSchema(schema);",
+									"});",
+									"",
+									"var responseJSON = JSON.parse(responseBody)",
+									"pm.test(\"Should be one 'OrderConfirmed' and one 'OrderRejected' notification\", function() {",
+									"    pm.expect(responseJSON.length).to.eql(2);",
+									"       ",
+									"    var n1 = responseJSON[0]",
+									"    pm.expect(n1[\"type\"]).to.eql(\"OrderConfirmed\")",
+									"    pm.expect(n1[\"message\"].includes(pm.collectionVariables.get(\"orderId\"))).to.eql(true);",
+									"",
+									"    var n2 = responseJSON[1]",
+									"    pm.expect(n2[\"type\"]).to.eql(\"OrderRejected\")    ",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDA5NDQ4NjgsInVpZCI6IjVjZTcyYWNkLWYzNGYtNGM4Mi1iZGY0LWZmZjg4ZDEwYmRhZiIsImxvZ2luIjoiT2xpbi5XZWhuZXI3In0.F6Wx7TodBO-E51VuVrF22Xm3OSIzMmkVA7YCAiUKvhE",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/notification/api/v1/notifications",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"notification",
+								"api",
+								"v1",
+								"notifications"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "successfull response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/notifications",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"notifications"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n {\n  \"type\": \"OrderConfirmed\",\n  \"message\": \"sit\",\n  \"creationDate\": \"1983-05-14T17:08:27.504Z\"\n },\n {\n  \"type\": \"OrderRejected\",\n  \"message\": \"sint est voluptate esse\",\n  \"creationDate\": \"1951-10-24T01:29:46.393Z\"\n }\n]"
+						},
+						{
+							"name": "forbidden response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/notifications",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"notifications"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": 49007638,\n \"message\": \"non\"\n}"
+						},
+						{
+							"name": "unexpected error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/notifications",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"notifications"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": 49007638,\n \"message\": \"non\"\n}"
 						}
 					]
 				},
@@ -2760,6 +2469,22 @@
 		},
 		{
 			"key": "userId2",
+			"value": ""
+		},
+		{
+			"key": "orderId",
+			"value": ""
+		},
+		{
+			"key": "accountAmount",
+			"value": ""
+		},
+		{
+			"key": "price",
+			"value": ""
+		},
+		{
+			"key": "retry",
 			"value": ""
 		}
 	]
