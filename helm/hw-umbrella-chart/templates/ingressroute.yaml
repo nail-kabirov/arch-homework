@@ -13,7 +13,40 @@ spec:
           namespace: {{ .Release.Namespace }}
           port: {{ index .Values "auth-app-chart" "service" "port" }}
       middlewares:
-        - name: strip-auth-prefix
+        - name: strip-service-prefixes
+          namespace: {{ .Release.Namespace }}
+    - kind: Rule
+      match: PathPrefix(`/billing/api/`)
+      services:
+        - name: {{ index .Values "billing-app-chart" "fullnameOverride" }}
+          namespace: {{ .Release.Namespace }}
+          port: {{ index .Values "billing-app-chart" "service" "port" }}
+      middlewares:
+        - name: strip-service-prefixes
+          namespace: {{ .Release.Namespace }}
+        - name: authentication
+          namespace: {{ .Release.Namespace }}
+    - kind: Rule
+      match: PathPrefix(`/order/api/`)
+      services:
+        - name: {{ index .Values "order-app-chart" "fullnameOverride" }}
+          namespace: {{ .Release.Namespace }}
+          port: {{ index .Values "order-app-chart" "service" "port" }}
+      middlewares:
+        - name: strip-service-prefixes
+          namespace: {{ .Release.Namespace }}
+        - name: authentication
+          namespace: {{ .Release.Namespace }}
+    - kind: Rule
+      match: PathPrefix(`/notification/api/`)
+      services:
+        - name: {{ index .Values "notification-app-chart" "fullnameOverride" }}
+          namespace: {{ .Release.Namespace }}
+          port: {{ index .Values "notification-app-chart" "service" "port" }}
+      middlewares:
+        - name: strip-service-prefixes
+          namespace: {{ .Release.Namespace }}
+        - name: authentication
           namespace: {{ .Release.Namespace }}
     - kind: Rule
       match: PathPrefix(`/user/api/`)
@@ -22,7 +55,7 @@ spec:
           namespace: {{ .Release.Namespace }}
           port: {{ index .Values "user-app-chart" "service" "port" }}
       middlewares:
-        - name: strip-user-prefix
+        - name: strip-service-prefixes
           namespace: {{ .Release.Namespace }}
         - name: authentication
           namespace: {{ .Release.Namespace }}

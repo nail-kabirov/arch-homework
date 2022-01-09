@@ -74,6 +74,10 @@ billing-app-chart:
     postgresqlPassword: billing-pwd
     postgresqlDatabase: billing_db
     servicePort: "5433"
+  rabbitmq:
+    port: "5552"
+    user: rmq_user
+    password: rmq_pwd
 
 notification-app-chart:
   postgresql:
@@ -81,6 +85,10 @@ notification-app-chart:
     postgresqlPassword: notification-pwd
     postgresqlDatabase: notification_db
     servicePort: "5433"
+  rabbitmq:
+    port: "5552"
+    user: rmq_user
+    password: rmq_pwd
 
 order-app-chart:
   postgresql:
@@ -88,6 +96,10 @@ order-app-chart:
     postgresqlPassword: order-pwd
     postgresqlDatabase: order_db
     servicePort: "5433"
+  rabbitmq:
+    port: "5552"
+    user: rmq_user
+    password: rmq_pwd
 
 user-app-chart:
   postgresql:

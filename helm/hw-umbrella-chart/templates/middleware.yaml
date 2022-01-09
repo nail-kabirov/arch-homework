@@ -1,20 +1,14 @@
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: strip-auth-prefix
+  name: strip-service-prefixes
 spec:
   stripPrefix:
     prefixes:
       - /auth
-
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: strip-user-prefix
-spec:
-  stripPrefix:
-    prefixes:
+      - /billing
+      - /order
+      - /notification
       - /user
 
 ---

@@ -18,5 +18,11 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
   - name: auth-app-chart
     version: 0.0.x
+  - name: billing-app-chart
+    version: 0.0.x
+  - name: order-app-chart
+    version: 0.0.x
+  - name: notification-app-chart
+    version: 0.0.x
   - name: user-app-chart
     version: 0.0.x
