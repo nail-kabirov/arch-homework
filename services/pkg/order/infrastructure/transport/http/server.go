@@ -29,6 +29,7 @@ const (
 const (
 	errorCodeUnknown       = 0
 	errorCodeOrderNotFound = 1
+	errorCodePaymentFailed = 1
 )
 
 const authTokenHeader = "X-Auth-Token"
@@ -208,6 +209,9 @@ func writeErrorResponse(w http.ResponseWriter, err error) {
 	case app.ErrOrderNotFound:
 		info.Code = errorCodeOrderNotFound
 		w.WriteHeader(http.StatusNotFound)
+	case app.ErrPaymentFailed:
+		info.Code = errorCodePaymentFailed
+		w.WriteHeader(http.StatusBadRequest)
 	case errForbidden:
 		w.WriteHeader(http.StatusForbidden)
 	default:

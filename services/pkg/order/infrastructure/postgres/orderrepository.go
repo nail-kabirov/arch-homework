@@ -71,6 +71,7 @@ func (repo *orderRepository) FindAllByUserID(userID app.UserID) ([]app.Order, er
 func sqlxOrderToOrder(order *sqlxOrder) app.Order {
 	return app.Order{
 		ID:           app.OrderID(order.ID),
+		UserID:       app.UserID(order.UserID),
 		Price:        app.PriceFromRawValue(order.Price),
 		CreationDate: order.CreationDate,
 	}

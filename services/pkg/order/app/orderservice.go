@@ -4,8 +4,13 @@ import (
 	"arch-homework/pkg/common/app/integrationevent"
 	"arch-homework/pkg/common/app/storedevent"
 	"arch-homework/pkg/common/app/uuid"
+
+	"github.com/pkg/errors"
+
 	"time"
 )
+
+var ErrPaymentFailed = errors.New("order payment failed")
 
 func NewOrderService(dbDependency DBDependency, eventSender storedevent.Sender, billingClient BillingClient) *OrderService {
 	return &OrderService{
@@ -67,6 +72,11 @@ func (s *OrderService) Create(userID UserID, priceFloat float64) (OrderID, error
 	}
 
 	s.eventSender.SendStoredEvents()
+
+	if !paymentSucceeded {
+		return id, errors.WithStack(ErrPaymentFailed)
+	}
+
 	return id, err
 }
 
