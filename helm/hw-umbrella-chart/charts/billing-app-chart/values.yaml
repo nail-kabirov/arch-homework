@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: nailkabirov/arch-hw7-billing
+  repository: nailkabirov/arch-hw8-billing
   # Overrides the image tag whose default is the chart appVersion.
   # tag: ""
 

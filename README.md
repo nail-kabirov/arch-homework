@@ -23,13 +23,13 @@ API всех сервисов можно посмотреть в папке `ser
 1. Прописать в hosts домен `arch.homework` на ip кластера
 2. При необходимости создать новый namespace и выбрать его, например:
 ```
-kubectl create namespace arch-hw7 && kubectl config set-context --current --namespace=arch-hw7
+kubectl create namespace arch-hw8 && kubectl config set-context --current --namespace=arch-hw8
 ```
 3. Установить Nginx при отсутствии (или включить addon в minikube - `minikube addons enable ingress`)
 
 ### Установка приложения с помощью helm:
 ```
-helm install hw7 helm/hw-umbrella-chart
+helm install hw8 helm/hw-umbrella-chart
 ```
 # Тестирование
 ### Запуск тестов:

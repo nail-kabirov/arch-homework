@@ -5,7 +5,7 @@
 replicaCount: 2
 
 image:
-  repository: nailkabirov/arch-hw7-auth
+  repository: nailkabirov/arch-hw8-auth
   # Overrides the image tag whose default is the chart appVersion.
   # tag: ""
 

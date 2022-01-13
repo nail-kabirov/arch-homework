@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: nailkabirov/arch-hw7-notification
+  repository: nailkabirov/arch-hw8-notification
   # Overrides the image tag whose default is the chart appVersion.
   # tag: ""
 
