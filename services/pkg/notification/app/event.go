@@ -5,8 +5,8 @@ import (
 	"arch-homework/pkg/common/app/uuid"
 )
 
-type ProcessedEventRepo interface {
-	SetProcessed(uid integrationevent.EventUID) (alreadyProcessed bool, err error)
+type ProcessedEventRepository interface {
+	SetEventProcessed(uid integrationevent.EventUID) (alreadyProcessed bool, err error)
 }
 
 type UserEvent interface {

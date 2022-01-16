@@ -2,7 +2,7 @@ package app
 
 type RepositoryProvider interface {
 	NotificationRepository() NotificationRepository
-	ProcessedEventRepo() ProcessedEventRepo
+	ProcessedEventRepo() ProcessedEventRepository
 }
 
 type TransactionalUnit interface {

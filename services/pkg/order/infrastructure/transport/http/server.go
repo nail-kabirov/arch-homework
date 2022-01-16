@@ -27,14 +27,17 @@ const (
 )
 
 const (
-	errorCodeUnknown       = 0
-	errorCodeOrderNotFound = 1
-	errorCodePaymentFailed = 1
+	errorCodeUnknown          = 0
+	errorCodeInvalidRequestID = 1
+	errorCodeOrderNotFound    = 2
+	errorCodePaymentFailed    = 3
 )
 
 const authTokenHeader = "X-Auth-Token"
+const requestIDHeader = "X-Request-ID"
 
 var errForbidden = errors.New("access forbidden")
+var errInvalidRequestID = errors.New("empty or invalid request id")
 
 func NewEndpointLabelCollector() metrics.EndpointLabelCollector {
 	return endpointLabelCollector{}
@@ -147,6 +150,11 @@ func (s *Server) createOrderHandler(w http.ResponseWriter, r *http.Request) erro
 		return err
 	}
 
+	requestID, err := s.getRequestIDHeader(r)
+	if err != nil {
+		return err
+	}
+
 	var info createOrderInfo
 	bytesBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -156,7 +164,7 @@ func (s *Server) createOrderHandler(w http.ResponseWriter, r *http.Request) erro
 		return err
 	}
 
-	orderID, err := s.orderService.Create(app.UserID(tokenData.UserID()), info.Price)
+	orderID, err := s.orderService.Create(requestID, app.UserID(tokenData.UserID()), info.Price)
 	if err != nil {
 		return err
 	}
@@ -178,6 +186,15 @@ func (s *Server) extractAuthorizationData(r *http.Request) (jwtauth.TokenData, e
 		return nil, errors.WithStack(err)
 	}
 	return tokenData, nil
+}
+
+func (s *Server) getRequestIDHeader(r *http.Request) (app.RequestID, error) {
+	requestID := r.Header.Get(requestIDHeader)
+	err := uuid.ValidateUUID(requestID)
+	if err != nil {
+		return "", errors.Wrap(errInvalidRequestID, err.Error())
+	}
+	return app.RequestID(requestID), nil
 }
 
 func getIDFromRequest(r *http.Request) (app.OrderID, error) {
@@ -206,6 +223,9 @@ func writeResponse(w http.ResponseWriter, response interface{}) {
 func writeErrorResponse(w http.ResponseWriter, err error) {
 	info := errorInfo{Code: errorCodeUnknown, Message: err.Error()}
 	switch errors.Cause(err) {
+	case errInvalidRequestID:
+		info.Code = errorCodeInvalidRequestID
+		w.WriteHeader(http.StatusBadRequest)
 	case app.ErrOrderNotFound:
 		info.Code = errorCodeOrderNotFound
 		w.WriteHeader(http.StatusNotFound)

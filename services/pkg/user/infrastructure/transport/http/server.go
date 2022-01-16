@@ -26,13 +26,16 @@ const (
 )
 
 const (
-	errorCodeUnknown      = 0
-	errorCodeUserNotFound = 1
+	errorCodeUnknown          = 0
+	errorCodeInvalidRequestID = 1
+	errorCodeUserNotFound     = 2
 )
 
 const authTokenHeader = "X-Auth-Token"
+const requestIDHeader = "X-Request-ID"
 
 var errForbidden = errors.New("access forbidden")
+var errInvalidRequestID = errors.New("empty or invalid request id")
 
 func NewEndpointLabelCollector() metrics.EndpointLabelCollector {
 	return endpointLabelCollector{}
@@ -147,6 +150,11 @@ func (s *Server) updateUserHandler(w http.ResponseWriter, r *http.Request) error
 		return errForbidden
 	}
 
+	requestID, err := s.getRequestIDHeader(r)
+	if err != nil {
+		return err
+	}
+
 	var info userInfoUpdate
 	bytesBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -167,7 +175,7 @@ func (s *Server) updateUserHandler(w http.ResponseWriter, r *http.Request) error
 		phone = &phoneValue
 	}
 
-	err = s.userService.Update(id, info.FirstName, info.LastName, email, phone)
+	err = s.userService.Update(requestID, id, info.FirstName, info.LastName, email, phone)
 	if err != nil {
 		return err
 	}
@@ -189,6 +197,15 @@ func (s *Server) extractAuthorizationData(r *http.Request) (jwtauth.TokenData, e
 		return nil, errors.WithStack(err)
 	}
 	return tokenData, nil
+}
+
+func (s *Server) getRequestIDHeader(r *http.Request) (app.RequestID, error) {
+	requestID := r.Header.Get(requestIDHeader)
+	err := uuid.ValidateUUID(requestID)
+	if err != nil {
+		return "", errors.Wrap(errInvalidRequestID, err.Error())
+	}
+	return app.RequestID(requestID), nil
 }
 
 func getIDFromRequest(r *http.Request) (app.UserID, error) {
@@ -217,6 +234,9 @@ func writeResponse(w http.ResponseWriter, response interface{}) {
 func writeErrorResponse(w http.ResponseWriter, err error) {
 	info := errorInfo{Code: errorCodeUnknown, Message: err.Error()}
 	switch errors.Cause(err) {
+	case errInvalidRequestID:
+		info.Code = errorCodeInvalidRequestID
+		w.WriteHeader(http.StatusBadRequest)
 	case app.ErrUserNotFound:
 		info.Code = errorCodeUserNotFound
 		w.WriteHeader(http.StatusNotFound)

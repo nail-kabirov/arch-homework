@@ -119,9 +119,9 @@ func startServer(
 	tokenParser := jwtauth.NewTokenParser(cfg.JWTSecret)
 	_ = tokenParser
 
-	userAccountRepo := postgres.NewUserAccountRepository(connector.Client())
-	billingService := app.NewBillingService(userAccountRepo)
-	billingServer := serverhttp.NewServer(billingService, tokenParser, logger)
+	billingQueryService := app.NewBillingQueryService(postgres.NewUserAccountRepository(connector.Client()))
+	billingService := app.NewBillingService(trUnitFactory)
+	billingServer := serverhttp.NewServer(billingService, billingQueryService, tokenParser, logger)
 
 	router := mux.NewRouter()
 	router.HandleFunc("/health", handleHealth).Methods(http.MethodGet)

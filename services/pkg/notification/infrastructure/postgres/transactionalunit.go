@@ -31,7 +31,7 @@ func (t *transactionalUnit) NotificationRepository() app.NotificationRepository 
 	return NewNotificationRepository(t.transaction)
 }
 
-func (t *transactionalUnit) ProcessedEventRepo() app.ProcessedEventRepo {
+func (t *transactionalUnit) ProcessedEventRepo() app.ProcessedEventRepository {
 	return NewProcessedEventRepository(t.transaction)
 }
 

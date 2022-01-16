@@ -26,9 +26,9 @@ func (handler *eventHandler) Handle(event integrationevent.EventData) error {
 		return err
 	}
 
-	return handler.executeInTransaction(func(provider RepositoryProvider) error {
-		eventRepo := provider.ProcessedEventRepo()
-		alreadyProcessed, err := eventRepo.SetProcessed(event.UID)
+	return handler.executeInTransaction(func(trUnit TransactionalUnit) error {
+		eventRepo := trUnit.ProcessedEventRepository()
+		alreadyProcessed, err := eventRepo.SetEventProcessed(event.UID)
 		if err != nil {
 			return err
 		}
@@ -38,14 +38,14 @@ func (handler *eventHandler) Handle(event integrationevent.EventData) error {
 
 		switch e := parsedEvent.(type) {
 		case userRegisteredEvent:
-			return handleUserRegisteredEvent(provider, e)
+			return handleUserRegisteredEvent(trUnit, e)
 		default:
 			return nil
 		}
 	})
 }
 
-func (handler *eventHandler) executeInTransaction(f func(RepositoryProvider) error) (err error) {
+func (handler *eventHandler) executeInTransaction(f func(TransactionalUnit) error) (err error) {
 	var trUnit TransactionalUnit
 	trUnit, err = handler.trUnitFactory.NewTransactionalUnit()
 	if err != nil {
@@ -58,7 +58,7 @@ func (handler *eventHandler) executeInTransaction(f func(RepositoryProvider) err
 	return err
 }
 
-func handleUserRegisteredEvent(provider RepositoryProvider, e userRegisteredEvent) error {
-	service := NewBillingService(provider.UserAccountRepository())
+func handleUserRegisteredEvent(trUnit TransactionalUnit, e userRegisteredEvent) error {
+	service := NewBillingService(trUnit)
 	return service.CreateAccount(e.UserID())
 }

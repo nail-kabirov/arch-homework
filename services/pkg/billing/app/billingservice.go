@@ -4,63 +4,83 @@ import "github.com/pkg/errors"
 
 var ErrNotEnoughFunds = errors.New("not enough funds for payment")
 
-func NewBillingService(repo UserAccountRepository) BillingService {
-	return &billingService{
-		repo: repo,
-	}
+func NewBillingService(trUnitFactory TransactionalUnitFactory) BillingService {
+	return &billingService{trUnitFactory: trUnitFactory}
 }
 
 type BillingService interface {
 	CreateAccount(userID UserID) error
-	AccountBalance(userID UserID) (Amount, error)
-	TopUpAccount(userID UserID, amount Amount) error
+	TopUpAccount(requestID RequestID, userID UserID, amount Amount) error
 	ProcessPayment(userID UserID, amount Amount) error
 }
 
 type billingService struct {
-	repo UserAccountRepository
+	trUnitFactory TransactionalUnitFactory
 }
 
 func (s *billingService) CreateAccount(userID UserID) error {
-	_, err := s.repo.FindByID(userID)
-	if err == nil {
-		return ErrUserAccountAlreadyExists
-	}
-	if errors.Cause(err) != ErrUserAccountNotFound {
-		return err
-	}
-	userAccount := UserAccount{
-		UserID: userID,
-		Amount: AmountFromRawValue(0),
-	}
-	return s.repo.Store(&userAccount)
+	return s.executeInTransaction(func(repoProvider RepositoryProvider) error {
+		repo := repoProvider.UserAccountRepository()
+		_, err := repo.FindByID(userID)
+		if err == nil {
+			return ErrUserAccountAlreadyExists
+		}
+		if errors.Cause(err) != ErrUserAccountNotFound {
+			return err
+		}
+		userAccount := UserAccount{
+			UserID: userID,
+			Amount: AmountFromRawValue(0),
+		}
+		return repo.Store(&userAccount)
+	})
 }
 
-func (s *billingService) AccountBalance(userID UserID) (Amount, error) {
-	account, err := s.repo.FindByID(userID)
-	if err != nil {
-		return nil, err
-	}
-	return account.Amount, nil
-}
+func (s *billingService) TopUpAccount(requestID RequestID, userID UserID, amount Amount) error {
+	return s.executeInTransaction(func(provider RepositoryProvider) error {
+		eventRepo := provider.ProcessedRequestRepository()
+		alreadyProcessed, err := eventRepo.SetRequestProcessed(requestID)
+		if err != nil {
+			return err
+		}
+		if alreadyProcessed {
+			return nil
+		}
 
-func (s *billingService) TopUpAccount(userID UserID, amount Amount) error {
-	account, err := s.repo.FindByID(userID)
-	if err != nil {
-		return err
-	}
-	account.Amount = AmountFromRawValue(account.Amount.RawValue() + amount.RawValue())
-	return s.repo.Store(account)
+		accountRepo := provider.UserAccountRepository()
+		account, err := accountRepo.FindByID(userID)
+		if err != nil {
+			return err
+		}
+		account.Amount = AmountFromRawValue(account.Amount.RawValue() + amount.RawValue())
+		return accountRepo.Store(account)
+	})
 }
 
 func (s *billingService) ProcessPayment(userID UserID, amount Amount) error {
-	account, err := s.repo.FindByID(userID)
+	return s.executeInTransaction(func(provider RepositoryProvider) error {
+		repo := provider.UserAccountRepository()
+		account, err := repo.FindByID(userID)
+		if err != nil {
+			return err
+		}
+		if amount.RawValue() > account.Amount.RawValue() {
+			return ErrNotEnoughFunds
+		}
+		account.Amount = AmountFromRawValue(account.Amount.RawValue() - amount.RawValue())
+		return repo.Store(account)
+	})
+}
+
+func (s *billingService) executeInTransaction(f func(RepositoryProvider) error) (err error) {
+	var trUnit TransactionalUnit
+	trUnit, err = s.trUnitFactory.NewTransactionalUnit()
 	if err != nil {
 		return err
 	}
-	if amount.RawValue() > account.Amount.RawValue() {
-		return ErrNotEnoughFunds
-	}
-	account.Amount = AmountFromRawValue(account.Amount.RawValue() - amount.RawValue())
-	return s.repo.Store(account)
+	defer func() {
+		err = trUnit.Complete(err)
+	}()
+	err = f(trUnit)
+	return err
 }

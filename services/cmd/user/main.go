@@ -81,7 +81,8 @@ func startServer(cfg *config, connector commonpostgres.Connector, logger *logrus
 	if err := connector.WaitUntilReady(); err != nil {
 		logger.Fatal(err)
 	}
-	userService := app.NewUserService(postgres.NewUserRepository(connector.Client()))
+	dbDependency := postgres.NewDBDependency(connector.Client())
+	userService := app.NewUserService(dbDependency)
 	tokenParser := jwtauth.NewTokenParser(cfg.JWTSecret)
 	userServer := serverhttp.NewServer(userService, tokenParser, logger)
 

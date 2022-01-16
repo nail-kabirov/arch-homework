@@ -1,15 +1,12 @@
 package app
 
-import "arch-homework/pkg/common/app/storedevent"
-
 type RepositoryProvider interface {
-	OrderRepository() OrderRepository
+	UserRepository() UserRepository
 	ProcessedRequestRepository() ProcessedRequestRepository
-	EventStore() storedevent.EventStore
 }
 
 type ReadRepositoryProvider interface {
-	OrderRepositoryRead() OrderRepositoryRead
+	UserRepositoryRead() UserRepositoryRead
 }
 
 type TransactionalUnit interface {

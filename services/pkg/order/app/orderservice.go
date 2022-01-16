@@ -28,7 +28,7 @@ type OrderService struct {
 	billingClient BillingClient
 }
 
-func (s *OrderService) Create(userID UserID, priceFloat float64) (OrderID, error) {
+func (s *OrderService) Create(requestID RequestID, userID UserID, priceFloat float64) (OrderID, error) {
 	price, err := PriceFromFloat(priceFloat)
 	if err != nil {
 		return "", err
@@ -48,6 +48,15 @@ func (s *OrderService) Create(userID UserID, priceFloat float64) (OrderID, error
 	}
 
 	err = s.executeInTransaction(func(provider RepositoryProvider) error {
+		eventRepo := provider.ProcessedRequestRepository()
+		alreadyProcessed, err := eventRepo.SetRequestProcessed(requestID)
+		if err != nil {
+			return err
+		}
+		if alreadyProcessed {
+			return nil
+		}
+
 		var event integrationevent.EventData
 		if paymentSucceeded {
 			err2 := provider.OrderRepository().Store(&order)

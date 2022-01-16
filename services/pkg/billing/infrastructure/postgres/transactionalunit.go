@@ -20,29 +20,49 @@ func (d *transactionalUnitFactory) NewTransactionalUnit() (app.TransactionalUnit
 	if err != nil {
 		return nil, err
 	}
-	return &transactionalUnit{transaction: transaction}, nil
+	return &transactionalUnit{transaction: transaction, nestedLevel: 1}, nil
 }
 
 type transactionalUnit struct {
 	transaction postgres.Transaction
+	nestedLevel uint
+	completeErr error
+}
+
+func (t *transactionalUnit) NewTransactionalUnit() (app.TransactionalUnit, error) {
+	t.nestedLevel++
+	return t, nil
 }
 
 func (t *transactionalUnit) UserAccountRepository() app.UserAccountRepository {
 	return NewUserAccountRepository(t.transaction)
 }
 
-func (t *transactionalUnit) ProcessedEventRepo() app.ProcessedEventRepo {
+func (t *transactionalUnit) ProcessedEventRepository() app.ProcessedEventRepository {
 	return NewProcessedEventRepository(t.transaction)
 }
 
+func (t *transactionalUnit) ProcessedRequestRepository() app.ProcessedRequestRepository {
+	return NewProcessedRequestRepository(t.transaction)
+}
+
 func (t *transactionalUnit) Complete(err error) error {
+	t.nestedLevel--
+
+	if t.completeErr != nil {
+		return t.completeErr
+	}
+
 	if err != nil {
 		rollbackErr := t.transaction.Rollback()
 		if rollbackErr != nil {
-			return errors.Wrap(err, rollbackErr.Error())
+			err = errors.Wrap(err, rollbackErr.Error())
 		}
+		t.completeErr = err
 		return err
 	}
-
+	if t.nestedLevel > 0 {
+		return nil
+	}
 	return errors.WithStack(t.transaction.Commit())
 }

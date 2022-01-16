@@ -28,7 +28,7 @@ func (handler *eventHandler) Handle(event integrationevent.EventData) error {
 
 	return handler.executeInTransaction(func(provider RepositoryProvider) error {
 		eventRepo := provider.ProcessedEventRepo()
-		alreadyProcessed, err := eventRepo.SetProcessed(event.UID)
+		alreadyProcessed, err := eventRepo.SetEventProcessed(event.UID)
 		if err != nil {
 			return err
 		}

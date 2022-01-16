@@ -1,9 +1,8 @@
 package postgres
 
 import (
-	"arch-homework/pkg/common/app/storedevent"
 	"arch-homework/pkg/common/infrastructure/postgres"
-	"arch-homework/pkg/order/app"
+	"arch-homework/pkg/user/app"
 
 	"github.com/pkg/errors"
 )
@@ -16,8 +15,8 @@ type dbDependency struct {
 	client postgres.TransactionalClient
 }
 
-func (d *dbDependency) OrderRepositoryRead() app.OrderRepositoryRead {
-	return NewOrderRepository(d.client)
+func (d *dbDependency) UserRepositoryRead() app.UserRepositoryRead {
+	return NewUserRepository(d.client)
 }
 
 func (d *dbDependency) NewTransactionalUnit() (app.TransactionalUnit, error) {
@@ -32,12 +31,8 @@ type transactionalUnit struct {
 	transaction postgres.Transaction
 }
 
-func (t *transactionalUnit) EventStore() storedevent.EventStore {
-	return NewEventStore(t.transaction)
-}
-
-func (t *transactionalUnit) OrderRepository() app.OrderRepository {
-	return NewOrderRepository(t.transaction)
+func (t *transactionalUnit) UserRepository() app.UserRepository {
+	return NewUserRepository(t.transaction)
 }
 
 func (t *transactionalUnit) ProcessedRequestRepository() app.ProcessedRequestRepository {

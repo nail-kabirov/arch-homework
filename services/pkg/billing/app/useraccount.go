@@ -16,7 +16,11 @@ type UserAccount struct {
 	Amount Amount
 }
 
-type UserAccountRepository interface {
-	Store(userAccount *UserAccount) error
+type UserAccountRepositoryRead interface {
 	FindByID(id UserID) (*UserAccount, error)
+}
+
+type UserAccountRepository interface {
+	UserAccountRepositoryRead
+	Store(userAccount *UserAccount) error
 }

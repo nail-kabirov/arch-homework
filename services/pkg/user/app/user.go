@@ -19,9 +19,13 @@ type User struct {
 	Phone     Phone
 }
 
-type UserRepository interface {
-	Store(user *User) error
-	Remove(id UserID) error
+type UserRepositoryRead interface {
 	FindByID(id UserID) (*User, error)
 	FindAll() ([]User, error)
+}
+
+type UserRepository interface {
+	UserRepositoryRead
+	Store(user *User) error
+	Remove(id UserID) error
 }

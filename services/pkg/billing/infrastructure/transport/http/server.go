@@ -23,27 +23,32 @@ const (
 )
 
 const (
-	errorCodeUnknown    = 0
-	errorNotEnoughFunds = 1
-	errorInvalidAmount  = 2
+	errorCodeUnknown          = 0
+	errorCodeInvalidRequestID = 1
+	errorNotEnoughFunds       = 2
+	errorInvalidAmount        = 3
 )
 
 const authTokenHeader = "X-Auth-Token"
+const requestIDHeader = "X-Request-ID"
 
 var errForbidden = errors.New("access forbidden")
+var errInvalidRequestID = errors.New("empty or invalid request id")
 
-func NewServer(billingService app.BillingService, tokenParser jwtauth.TokenParser, logger *logrus.Logger) *Server {
+func NewServer(billingService app.BillingService, billingQueryService app.BillingQueryService, tokenParser jwtauth.TokenParser, logger *logrus.Logger) *Server {
 	return &Server{
-		billingService: billingService,
-		tokenParser:    tokenParser,
-		logger:         logger,
+		billingService:      billingService,
+		billingQueryService: billingQueryService,
+		tokenParser:         tokenParser,
+		logger:              logger,
 	}
 }
 
 type Server struct {
-	billingService app.BillingService
-	tokenParser    jwtauth.TokenParser
-	logger         *logrus.Logger
+	billingService      app.BillingService
+	billingQueryService app.BillingQueryService
+	tokenParser         jwtauth.TokenParser
+	logger              *logrus.Logger
 }
 
 func (s *Server) MakeHandler() http.Handler {
@@ -93,7 +98,7 @@ func (s *Server) getAccountStatusEndpoint(w http.ResponseWriter, r *http.Request
 		return err
 	}
 
-	balance, err := s.billingService.AccountBalance(app.UserID(tokenData.UserID()))
+	balance, err := s.billingQueryService.AccountBalance(app.UserID(tokenData.UserID()))
 	if err != nil {
 		return err
 	}
@@ -103,6 +108,11 @@ func (s *Server) getAccountStatusEndpoint(w http.ResponseWriter, r *http.Request
 
 func (s *Server) topUpAccountEndpoint(w http.ResponseWriter, r *http.Request) error {
 	tokenData, err := s.extractAuthorizationData(r)
+	if err != nil {
+		return err
+	}
+
+	requestID, err := s.getRequestIDHeader(r)
 	if err != nil {
 		return err
 	}
@@ -120,7 +130,7 @@ func (s *Server) topUpAccountEndpoint(w http.ResponseWriter, r *http.Request) er
 		return err
 	}
 
-	if err = s.billingService.TopUpAccount(app.UserID(tokenData.UserID()), amount); err != nil {
+	if err = s.billingService.TopUpAccount(requestID, app.UserID(tokenData.UserID()), amount); err != nil {
 		return err
 	}
 
@@ -168,6 +178,15 @@ func (s *Server) extractAuthorizationData(r *http.Request) (jwtauth.TokenData, e
 	return tokenData, nil
 }
 
+func (s *Server) getRequestIDHeader(r *http.Request) (app.RequestID, error) {
+	requestID := r.Header.Get(requestIDHeader)
+	err := uuid.ValidateUUID(requestID)
+	if err != nil {
+		return "", errors.Wrap(errInvalidRequestID, err.Error())
+	}
+	return app.RequestID(requestID), nil
+}
+
 func writeResponse(w http.ResponseWriter, response interface{}) {
 	js, err := json.Marshal(response)
 	if err != nil {
@@ -182,6 +201,9 @@ func writeResponse(w http.ResponseWriter, response interface{}) {
 func writeErrorResponse(w http.ResponseWriter, err error) {
 	info := errorInfo{Code: errorCodeUnknown, Message: err.Error()}
 	switch errors.Cause(err) {
+	case errInvalidRequestID:
+		info.Code = errorCodeInvalidRequestID
+		w.WriteHeader(http.StatusBadRequest)
 	case app.ErrNotEnoughFunds:
 		info.Code = errorNotEnoughFunds
 		w.WriteHeader(http.StatusBadRequest)
