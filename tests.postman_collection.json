@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "fe59918b-6fad-454c-aeb8-74a5bce0ce0b",
-		"name": "Homework 7",
+		"name": "Homework 8",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -464,9 +464,10 @@
 						"method": "GET",
 						"header": [
 							{
-								"key": "X-Auth-Token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDA5NDQ4NjgsInVpZCI6IjVjZTcyYWNkLWYzNGYtNGM4Mi1iZGY0LWZmZjg4ZDEwYmRhZiIsImxvZ2luIjoiT2xpbi5XZWhuZXI3In0.F6Wx7TodBO-E51VuVrF22Xm3OSIzMmkVA7YCAiUKvhE",
-								"type": "text"
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"url": {
@@ -579,7 +580,8 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.collectionVariables.set(\"accountAmount\", pm.variables.replaceIn('1000'))"
+									"pm.collectionVariables.set(\"accountAmount\", pm.variables.replaceIn('500'))",
+									"pm.collectionVariables.set(\"requestId\", pm.variables.replaceIn('{{$guid}}'))"
 								],
 								"type": "text/javascript"
 							}
@@ -605,8 +607,8 @@
 								"value": "application/json"
 							},
 							{
-								"key": "X-Auth-Token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDA5NDQ4NjgsInVpZCI6IjVjZTcyYWNkLWYzNGYtNGM4Mi1iZGY0LWZmZjg4ZDEwYmRhZiIsImxvZ2luIjoiT2xpbi5XZWhuZXI3In0.F6Wx7TodBO-E51VuVrF22Xm3OSIzMmkVA7YCAiUKvhE",
+								"key": "X-Request-ID",
+								"value": " {{requestId}}",
 								"type": "text"
 							}
 						],
@@ -787,9 +789,10 @@
 						"method": "GET",
 						"header": [
 							{
-								"key": "X-Auth-Token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDA5NDQ4NjgsInVpZCI6IjVjZTcyYWNkLWYzNGYtNGM4Mi1iZGY0LWZmZjg4ZDEwYmRhZiIsImxvZ2luIjoiT2xpbi5XZWhuZXI3In0.F6Wx7TodBO-E51VuVrF22Xm3OSIzMmkVA7YCAiUKvhE",
-								"type": "text"
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"url": {
@@ -896,6 +899,658 @@
 					]
 				},
 				{
+					"name": "Top up an account (duplicate with same request id)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status code is 409\", function () {",
+									"    pm.response.to.have.status(409);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Request-ID",
+								"value": " {{requestId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": {{accountAmount}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/billing/api/v1/account",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"billing",
+								"api",
+								"v1",
+								"account"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "forbidden response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"amount\": 3191070.63\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/account",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"account"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": 60777507,\n \"message\": \"velit ut deserunt in\"\n}"
+						},
+						{
+							"name": "unexpected error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"amount\": 3191070.63\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/account",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"account"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": 60777507,\n \"message\": \"velit ut deserunt in\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Account status not changed",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"amount\": {",
+									"            \"type\": \"number\"",
+									"        }",
+									"    },",
+									"    \"required\": [\"amount\"]",
+									"};",
+									"",
+									"pm.test('Response schema is valid', function() {",
+									"    pm.response.to.have.jsonSchema(schema);",
+									"});",
+									"",
+									"var responseJSON = JSON.parse(responseBody)",
+									"pm.test(\"Account amount should be equal to \" + pm.collectionVariables.get(\"accountAmount\"), function() {",
+									"    pm.expect(responseJSON[\"amount\"]).to.eql(parseFloat(pm.collectionVariables.get(\"accountAmount\")));",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/billing/api/v1/account",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"billing",
+								"api",
+								"v1",
+								"account"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "successfull response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/account",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"account"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"amount\": 68993046.62\n}"
+						},
+						{
+							"name": "forbidden response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/account",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"account"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": 60777507,\n \"message\": \"velit ut deserunt in\"\n}"
+						},
+						{
+							"name": "unexpected error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/account",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"account"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": 60777507,\n \"message\": \"velit ut deserunt in\"\n}"
+						},
+						{
+							"name": "successfull response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"amount\": 3191070.63\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/account",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"account"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "Top up an account second time",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"requestId\", pm.variables.replaceIn('{{$guid}}'))"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"if (pm.response.code == 200) {",
+									"    pm.collectionVariables.set(\"accountAmount\", parseFloat(pm.collectionVariables.get(\"accountAmount\") * 2));",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Request-ID",
+								"value": " {{requestId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": {{accountAmount}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/billing/api/v1/account",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"billing",
+								"api",
+								"v1",
+								"account"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "forbidden response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"amount\": 3191070.63\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/account",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"account"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": 60777507,\n \"message\": \"velit ut deserunt in\"\n}"
+						},
+						{
+							"name": "unexpected error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"amount\": 3191070.63\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/account",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"account"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": 60777507,\n \"message\": \"velit ut deserunt in\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Account status updated",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"amount\": {",
+									"            \"type\": \"number\"",
+									"        }",
+									"    },",
+									"    \"required\": [\"amount\"]",
+									"};",
+									"",
+									"pm.test('Response schema is valid', function() {",
+									"    pm.response.to.have.jsonSchema(schema);",
+									"});",
+									"",
+									"var responseJSON = JSON.parse(responseBody)",
+									"pm.test(\"Account amount should be equal to \" + pm.collectionVariables.get(\"accountAmount\"), function() {",
+									"    pm.expect(responseJSON[\"amount\"]).to.eql(parseFloat(pm.collectionVariables.get(\"accountAmount\")));",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/billing/api/v1/account",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"billing",
+								"api",
+								"v1",
+								"account"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "successfull response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/account",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"account"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"amount\": 68993046.62\n}"
+						},
+						{
+							"name": "forbidden response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/account",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"account"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": 60777507,\n \"message\": \"velit ut deserunt in\"\n}"
+						},
+						{
+							"name": "unexpected error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/account",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"account"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": 60777507,\n \"message\": \"velit ut deserunt in\"\n}"
+						},
+						{
+							"name": "successfull response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"amount\": 3191070.63\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/account",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"account"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
 					"name": "Initial notifications check",
 					"event": [
 						{
@@ -947,9 +1602,10 @@
 						"method": "GET",
 						"header": [
 							{
-								"key": "X-Auth-Token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDA5NDQ4NjgsInVpZCI6IjVjZTcyYWNkLWYzNGYtNGM4Mi1iZGY0LWZmZjg4ZDEwYmRhZiIsImxvZ2luIjoiT2xpbi5XZWhuZXI3In0.F6Wx7TodBO-E51VuVrF22Xm3OSIzMmkVA7YCAiUKvhE",
-								"type": "text"
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"url": {
@@ -1090,6 +1746,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"pm.collectionVariables.set(\"requestId\", pm.variables.replaceIn('{{$guid}}'))",
 									"pm.collectionVariables.set(\"price\", pm.variables.replaceIn('{{$randomPrice}}'))"
 								],
 								"type": "text/javascript"
@@ -1104,8 +1761,8 @@
 								"value": "application/json"
 							},
 							{
-								"key": "X-Auth-Token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDA5NDQ4NjgsInVpZCI6IjVjZTcyYWNkLWYzNGYtNGM4Mi1iZGY0LWZmZjg4ZDEwYmRhZiIsImxvZ2luIjoiT2xpbi5XZWhuZXI3In0.F6Wx7TodBO-E51VuVrF22Xm3OSIzMmkVA7YCAiUKvhE",
+								"key": "X-Request-ID",
+								"value": "{{requestId}}",
 								"type": "text"
 							}
 						],
@@ -1468,6 +2125,160 @@
 					]
 				},
 				{
+					"name": "Get all orders information",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const schema = {",
+									"    \"type\": \"array\",",
+									"    \"items\": {",
+									"        \"type\": \"object\",",
+									"        \"properties\": {",
+									"            \"id\": {",
+									"                \"type\": \"string\",",
+									"                \"format\": \"uuid\"",
+									"            },",
+									"            \"price\": {",
+									"                \"type\": \"number\"",
+									"            },",
+									"            \"creationDate\": {",
+									"                \"type\": \"string\",",
+									"                \"format\": \"date-time\"",
+									"            }",
+									"        },",
+									"        \"required\": [\"id\", \"price\"]",
+									"    }",
+									"};",
+									"",
+									"pm.test('Response schema is valid', function() {",
+									"    pm.response.to.have.jsonSchema(schema);",
+									"});",
+									"",
+									"var responseJSON = JSON.parse(responseBody)",
+									"pm.test(\"One order, information valid\", function() {",
+									"    pm.expect(responseJSON.length).to.eql(1);",
+									"    var order1 = responseJSON[0]",
+									"    pm.expect(order1[\"id\"]).to.eql(pm.collectionVariables.get(\"orderId\"));",
+									"    pm.expect(order1[\"price\"]).to.eql(parseFloat(pm.collectionVariables.get(\"price\")));",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/order/api/v1/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"order",
+								"api",
+								"v1",
+								"orders"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "successfull response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/orders",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"orders"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n {\n  \"id\": \"92b95177-d358-174f-7deb-a1b25aa37bf3\",\n  \"price\": 53293720.07,\n  \"creationDate\": \"2000-09-30T05:11:37.850Z\"\n },\n {\n  \"id\": \"13445128-77e5-f4b4-764d-58cd776d7d98\",\n  \"price\": 55548511.74,\n  \"creationDate\": \"2008-10-23T21:36:35.101Z\"\n }\n]"
+						},
+						{
+							"name": "forbidden response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/orders",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"orders"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": -21872015,\n \"message\": \"irure nisi\"\n}"
+						},
+						{
+							"name": "unexpected error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/orders",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"orders"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": -21872015,\n \"message\": \"irure nisi\"\n}"
+						}
+					]
+				},
+				{
 					"name": "Changed account status",
 					"event": [
 						{
@@ -1506,9 +2317,10 @@
 						"method": "GET",
 						"header": [
 							{
-								"key": "X-Auth-Token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDA5NDQ4NjgsInVpZCI6IjVjZTcyYWNkLWYzNGYtNGM4Mi1iZGY0LWZmZjg4ZDEwYmRhZiIsImxvZ2luIjoiT2xpbi5XZWhuZXI3In0.F6Wx7TodBO-E51VuVrF22Xm3OSIzMmkVA7YCAiUKvhE",
-								"type": "text"
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"url": {
@@ -1669,9 +2481,691 @@
 						"method": "GET",
 						"header": [
 							{
-								"key": "X-Auth-Token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDA5NDQ4NjgsInVpZCI6IjVjZTcyYWNkLWYzNGYtNGM4Mi1iZGY0LWZmZjg4ZDEwYmRhZiIsImxvZ2luIjoiT2xpbi5XZWhuZXI3In0.F6Wx7TodBO-E51VuVrF22Xm3OSIzMmkVA7YCAiUKvhE",
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/notification/api/v1/notifications",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"notification",
+								"api",
+								"v1",
+								"notifications"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "successfull response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/notifications",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"notifications"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n {\n  \"type\": \"OrderConfirmed\",\n  \"message\": \"sit\",\n  \"creationDate\": \"1983-05-14T17:08:27.504Z\"\n },\n {\n  \"type\": \"OrderRejected\",\n  \"message\": \"sint est voluptate esse\",\n  \"creationDate\": \"1951-10-24T01:29:46.393Z\"\n }\n]"
+						},
+						{
+							"name": "forbidden response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/notifications",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"notifications"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": 49007638,\n \"message\": \"non\"\n}"
+						},
+						{
+							"name": "unexpected error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/notifications",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"notifications"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": 49007638,\n \"message\": \"non\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Create affordable order (duplicate with same request id)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 409\", function () {",
+									"    pm.response.to.have.status(409);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Request-ID",
+								"value": "{{requestId}}",
 								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"price\": {{price}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/order/api/v1/order",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"order",
+								"api",
+								"v1",
+								"order"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "successfull response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"price\": 89087069.42\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/order",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"order"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"id\": \"urn:uuid:b6a45308-b64a-5865-cb83-8527e8e5d575\"\n}"
+						},
+						{
+							"name": "rejected response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"price\": 89087069.42\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/order",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"order"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": -21872015,\n \"message\": \"irure nisi\"\n}"
+						},
+						{
+							"name": "forbidden response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"price\": 89087069.42\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/order",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"order"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": -21872015,\n \"message\": \"irure nisi\"\n}"
+						},
+						{
+							"name": "unexpected error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"price\": 89087069.42\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/order",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"order"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": -21872015,\n \"message\": \"irure nisi\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Orders not changed",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const schema = {",
+									"    \"type\": \"array\",",
+									"    \"items\": {",
+									"        \"type\": \"object\",",
+									"        \"properties\": {",
+									"            \"id\": {",
+									"                \"type\": \"string\",",
+									"                \"format\": \"uuid\"",
+									"            },",
+									"            \"price\": {",
+									"                \"type\": \"number\"",
+									"            },",
+									"            \"creationDate\": {",
+									"                \"type\": \"string\",",
+									"                \"format\": \"date-time\"",
+									"            }",
+									"        },",
+									"        \"required\": [\"id\", \"price\"]",
+									"    }",
+									"};",
+									"",
+									"pm.test('Response schema is valid', function() {",
+									"    pm.response.to.have.jsonSchema(schema);",
+									"});",
+									"",
+									"var responseJSON = JSON.parse(responseBody)",
+									"pm.test(\"One order, information valid\", function() {",
+									"    pm.expect(responseJSON.length).to.eql(1);",
+									"    var order1 = responseJSON[0]",
+									"    pm.expect(order1[\"id\"]).to.eql(pm.collectionVariables.get(\"orderId\"));",
+									"    pm.expect(order1[\"price\"]).to.eql(parseFloat(pm.collectionVariables.get(\"price\")));",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/order/api/v1/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"order",
+								"api",
+								"v1",
+								"orders"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "successfull response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/orders",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"orders"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n {\n  \"id\": \"92b95177-d358-174f-7deb-a1b25aa37bf3\",\n  \"price\": 53293720.07,\n  \"creationDate\": \"2000-09-30T05:11:37.850Z\"\n },\n {\n  \"id\": \"13445128-77e5-f4b4-764d-58cd776d7d98\",\n  \"price\": 55548511.74,\n  \"creationDate\": \"2008-10-23T21:36:35.101Z\"\n }\n]"
+						},
+						{
+							"name": "forbidden response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/orders",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"orders"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": -21872015,\n \"message\": \"irure nisi\"\n}"
+						},
+						{
+							"name": "unexpected error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/orders",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"orders"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": -21872015,\n \"message\": \"irure nisi\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Account status not changed",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"amount\": {",
+									"            \"type\": \"number\"",
+									"        }",
+									"    },",
+									"    \"required\": [\"amount\"]",
+									"};",
+									"",
+									"pm.test('Response schema is valid', function() {",
+									"    pm.response.to.have.jsonSchema(schema);",
+									"});",
+									"",
+									"var responseJSON = JSON.parse(responseBody)",
+									"pm.test(\"Account amount reduced to order price\", function() {",
+									"    var expectedPrice = parseFloat(pm.collectionVariables.get(\"accountAmount\"))-parseFloat(pm.collectionVariables.get(\"price\"));",
+									"    pm.expect(responseJSON[\"amount\"]).to.eql(parseFloat(expectedPrice.toFixed(2)));",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/billing/api/v1/account",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"billing",
+								"api",
+								"v1",
+								"account"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "successfull response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/account",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"account"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"amount\": 68993046.62\n}"
+						},
+						{
+							"name": "forbidden response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/account",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"account"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": 60777507,\n \"message\": \"velit ut deserunt in\"\n}"
+						},
+						{
+							"name": "unexpected error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/account",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"account"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"code\": 60777507,\n \"message\": \"velit ut deserunt in\"\n}"
+						}
+					]
+				},
+				{
+					"name": "User notifications not changed",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const schema = {",
+									"    \"type\": \"array\",",
+									"    \"items\": {",
+									"        \"type\": \"object\",",
+									"        \"properties\": {",
+									"            \"type\": {",
+									"                \"type\": \"string\",",
+									"                \"enum\": [",
+									"                    \"OrderConfirmed\",",
+									"                    \"OrderRejected\"",
+									"                ]",
+									"            },",
+									"             \"message\": {",
+									"                \"type\": \"string\"",
+									"            },",
+									"            \"creationDate\": {",
+									"                \"type\": \"string\",",
+									"                \"format\": \"date-time\"",
+									"            }",
+									"        },",
+									"        \"required\": [\"type\", \"message\", \"creationDate\"]",
+									"    }",
+									"};",
+									"",
+									"pm.test('Response schema is valid', function() {",
+									"    pm.response.to.have.jsonSchema(schema);",
+									"});",
+									"",
+									"var responseJSON = JSON.parse(responseBody)",
+									"pm.test(\"Should be one 'OrderConfirmed' notification\", function() {",
+									"    pm.expect(responseJSON.length).to.eql(1);",
+									"    var n = responseJSON[0]",
+									"    pm.expect(n[\"type\"]).to.eql(\"OrderConfirmed\")",
+									"    pm.expect(n[\"message\"].includes(pm.collectionVariables.get(\"orderId\"))).to.eql(true);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"url": {
@@ -1790,6 +3284,15 @@
 								],
 								"type": "text/javascript"
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"requestId\", pm.variables.replaceIn('{{$guid}}'))"
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"request": {
@@ -1800,8 +3303,8 @@
 								"value": "application/json"
 							},
 							{
-								"key": "X-Auth-Token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDA5NDQ4NjgsInVpZCI6IjVjZTcyYWNkLWYzNGYtNGM4Mi1iZGY0LWZmZjg4ZDEwYmRhZiIsImxvZ2luIjoiT2xpbi5XZWhuZXI3In0.F6Wx7TodBO-E51VuVrF22Xm3OSIzMmkVA7YCAiUKvhE",
+								"key": "X-Request-ID",
+								"value": "{{requestId}}",
 								"type": "text"
 							}
 						],
@@ -2021,9 +3524,10 @@
 						"method": "GET",
 						"header": [
 							{
-								"key": "X-Auth-Token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDA5NDQ4NjgsInVpZCI6IjVjZTcyYWNkLWYzNGYtNGM4Mi1iZGY0LWZmZjg4ZDEwYmRhZiIsImxvZ2luIjoiT2xpbi5XZWhuZXI3In0.F6Wx7TodBO-E51VuVrF22Xm3OSIzMmkVA7YCAiUKvhE",
-								"type": "text"
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"url": {
@@ -2485,6 +3989,10 @@
 		},
 		{
 			"key": "retry",
+			"value": ""
+		},
+		{
+			"key": "requestId",
 			"value": ""
 		}
 	]
