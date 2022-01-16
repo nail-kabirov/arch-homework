@@ -11,6 +11,7 @@ import (
 )
 
 var ErrPaymentFailed = errors.New("order payment failed")
+var ErrAlreadyProcessed = errors.New("request with this id already processed")
 
 func NewOrderService(dbDependency DBDependency, eventSender storedevent.Sender, billingClient BillingClient) *OrderService {
 	return &OrderService{
@@ -42,10 +43,7 @@ func (s *OrderService) Create(requestID RequestID, userID UserID, priceFloat flo
 		CreationDate: time.Now(),
 	}
 
-	paymentSucceeded, err := s.billingClient.ProcessOrderPayment(userID, price)
-	if err != nil {
-		return "", err
-	}
+	var paymentSucceeded = false
 
 	err = s.executeInTransaction(func(provider RepositoryProvider) error {
 		eventRepo := provider.ProcessedRequestRepository()
@@ -54,7 +52,12 @@ func (s *OrderService) Create(requestID RequestID, userID UserID, priceFloat flo
 			return err
 		}
 		if alreadyProcessed {
-			return nil
+			return ErrAlreadyProcessed
+		}
+
+		paymentSucceeded, err = s.billingClient.ProcessOrderPayment(userID, price)
+		if err != nil {
+			return err
 		}
 
 		var event integrationevent.EventData

@@ -4,6 +4,8 @@ import (
 	"arch-homework/pkg/common/app/uuid"
 	"arch-homework/pkg/common/infrastructure/metrics"
 	"arch-homework/pkg/common/jwtauth"
+
+	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -29,8 +31,9 @@ const (
 const (
 	errorCodeUnknown          = 0
 	errorCodeInvalidRequestID = 1
-	errorCodeOrderNotFound    = 2
-	errorCodePaymentFailed    = 3
+	errorCodeAlreadyProcessed = 2
+	errorCodeOrderNotFound    = 3
+	errorCodePaymentFailed    = 4
 )
 
 const authTokenHeader = "X-Auth-Token"
@@ -94,6 +97,17 @@ func (s *Server) makeHandlerFunc(fn func(http.ResponseWriter, *http.Request) err
 		if r.PostForm != nil {
 			fields["post"] = r.PostForm
 		}
+
+		if r.Body != nil {
+			bytesBody, _ := ioutil.ReadAll(r.Body)
+			_ = r.Body.Close()
+			if len(bytesBody) > 0 {
+				r.Body = ioutil.NopCloser(bytes.NewBuffer(bytesBody))
+				fields["body"] = string(bytesBody)
+			}
+		}
+		headersBytes, _ := json.Marshal(r.Header)
+		fields["headers"] = string(headersBytes)
 
 		err := fn(w, r)
 
@@ -160,6 +174,7 @@ func (s *Server) createOrderHandler(w http.ResponseWriter, r *http.Request) erro
 	if err != nil {
 		return err
 	}
+	_ = r.Body.Close()
 	if err = json.Unmarshal(bytesBody, &info); err != nil {
 		return err
 	}
@@ -226,6 +241,9 @@ func writeErrorResponse(w http.ResponseWriter, err error) {
 	case errInvalidRequestID:
 		info.Code = errorCodeInvalidRequestID
 		w.WriteHeader(http.StatusBadRequest)
+	case app.ErrAlreadyProcessed:
+		info.Code = errorCodeAlreadyProcessed
+		w.WriteHeader(http.StatusConflict)
 	case app.ErrOrderNotFound:
 		info.Code = errorCodeOrderNotFound
 		w.WriteHeader(http.StatusNotFound)

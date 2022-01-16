@@ -3,6 +3,7 @@ package app
 import "github.com/pkg/errors"
 
 var ErrNotEnoughFunds = errors.New("not enough funds for payment")
+var ErrAlreadyProcessed = errors.New("request with this id already processed")
 
 func NewBillingService(trUnitFactory TransactionalUnitFactory) BillingService {
 	return &billingService{trUnitFactory: trUnitFactory}
@@ -44,7 +45,7 @@ func (s *billingService) TopUpAccount(requestID RequestID, userID UserID, amount
 			return err
 		}
 		if alreadyProcessed {
-			return nil
+			return ErrAlreadyProcessed
 		}
 
 		accountRepo := provider.UserAccountRepository()

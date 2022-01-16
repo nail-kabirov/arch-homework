@@ -4,11 +4,13 @@ import (
 	"arch-homework/pkg/common/app/uuid"
 	"arch-homework/pkg/common/jwtauth"
 	"arch-homework/pkg/notification/app"
+	"io/ioutil"
 
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
+	"bytes"
 	"encoding/json"
 	"net/http"
 	"time"
@@ -69,6 +71,17 @@ func (s *Server) makeHandlerFunc(fn func(http.ResponseWriter, *http.Request) err
 		if r.PostForm != nil {
 			fields["post"] = r.PostForm
 		}
+
+		if r.Body != nil {
+			bytesBody, _ := ioutil.ReadAll(r.Body)
+			_ = r.Body.Close()
+			if len(bytesBody) > 0 {
+				r.Body = ioutil.NopCloser(bytes.NewBuffer(bytesBody))
+				fields["body"] = string(bytesBody)
+			}
+		}
+		headersBytes, _ := json.Marshal(r.Header)
+		fields["headers"] = string(headersBytes)
 
 		err := fn(w, r)
 

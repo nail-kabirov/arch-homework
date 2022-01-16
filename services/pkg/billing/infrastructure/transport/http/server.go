@@ -9,6 +9,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
+	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -25,8 +26,9 @@ const (
 const (
 	errorCodeUnknown          = 0
 	errorCodeInvalidRequestID = 1
-	errorNotEnoughFunds       = 2
-	errorInvalidAmount        = 3
+	errorCodeAlreadyProcessed = 2
+	errorNotEnoughFunds       = 3
+	errorInvalidAmount        = 4
 )
 
 const authTokenHeader = "X-Auth-Token"
@@ -79,6 +81,17 @@ func (s *Server) makeHandlerFunc(fn func(http.ResponseWriter, *http.Request) err
 			fields["post"] = r.PostForm
 		}
 
+		if r.Body != nil {
+			bytesBody, _ := ioutil.ReadAll(r.Body)
+			_ = r.Body.Close()
+			if len(bytesBody) > 0 {
+				r.Body = ioutil.NopCloser(bytes.NewBuffer(bytesBody))
+				fields["body"] = string(bytesBody)
+			}
+		}
+		headersBytes, _ := json.Marshal(r.Header)
+		fields["headers"] = string(headersBytes)
+
 		err := fn(w, r)
 
 		if err != nil {
@@ -122,6 +135,7 @@ func (s *Server) topUpAccountEndpoint(w http.ResponseWriter, r *http.Request) er
 	if err != nil {
 		return err
 	}
+	_ = r.Body.Close()
 	if err = json.Unmarshal(bytesBody, &info); err != nil {
 		return err
 	}
@@ -144,6 +158,7 @@ func (s *Server) processPaymentEndpoint(w http.ResponseWriter, r *http.Request) 
 	if err != nil {
 		return err
 	}
+	_ = r.Body.Close()
 	if err = json.Unmarshal(bytesBody, &info); err != nil {
 		return err
 	}
@@ -204,6 +219,9 @@ func writeErrorResponse(w http.ResponseWriter, err error) {
 	case errInvalidRequestID:
 		info.Code = errorCodeInvalidRequestID
 		w.WriteHeader(http.StatusBadRequest)
+	case app.ErrAlreadyProcessed:
+		info.Code = errorCodeAlreadyProcessed
+		w.WriteHeader(http.StatusConflict)
 	case app.ErrNotEnoughFunds:
 		info.Code = errorNotEnoughFunds
 		w.WriteHeader(http.StatusBadRequest)

@@ -4,6 +4,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+var ErrAlreadyProcessed = errors.New("request with this id already processed")
+
 func NewUserService(dbDependency DBDependency) *UserService {
 	return &UserService{dbDependency: dbDependency}
 }
@@ -20,7 +22,7 @@ func (s *UserService) Update(requestID RequestID, id UserID, firstName, lastName
 			return err
 		}
 		if alreadyProcessed {
-			return nil
+			return ErrAlreadyProcessed
 		}
 
 		userRepo := provider.UserRepository()
