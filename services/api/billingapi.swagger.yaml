@@ -60,6 +60,13 @@ paths:
             schema:
               $ref: '#/components/schemas/TopUpData'
         required: true
+      parameters:
+        - in: header
+          name: X-Request-ID
+          schema:
+            type: string
+            format: uuid
+          required: true
 
   /internal/api/v1/payment:
     post:

@@ -84,7 +84,14 @@ paths:
                   lastName: Doe
                   email: bestjohn@doe.com
                   phone: '+71004242424'
-
+        required: true
+      parameters:
+        - in: header
+          name: X-Request-ID
+          schema:
+            type: string
+            format: uuid
+          required: true
       responses:
         '200':
           description: user updated

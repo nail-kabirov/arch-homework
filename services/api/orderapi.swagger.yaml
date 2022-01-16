@@ -51,6 +51,13 @@ paths:
             schema:
               $ref: '#/components/schemas/OrderData'
         required: true
+      parameters:
+        - in: header
+          name: X-Request-ID
+          schema:
+            type: string
+            format: uuid
+          required: true
   /api/v1/order/{orderId}:
     parameters:
       - name: orderId
