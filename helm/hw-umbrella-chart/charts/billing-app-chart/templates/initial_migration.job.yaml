@@ -33,7 +33,7 @@ spec:
                   user_id UUID PRIMARY KEY,
                   amount  bigint NOT NULL
                 );
-                CREATE TABLE IF NOT EXISTS processed_event
+                CREATE TABLE IF NOT EXISTS processed_request
                 (
                   uid UUID PRIMARY KEY
                 );

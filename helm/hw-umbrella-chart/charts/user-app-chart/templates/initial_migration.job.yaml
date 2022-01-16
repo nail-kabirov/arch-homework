@@ -36,4 +36,8 @@ spec:
                   email      varchar             NOT NULL,
                   phone      varchar             NOT NULL
                 );
+                CREATE TABLE IF NOT EXISTS processed_request
+                (
+                  uid UUID PRIMARY KEY
+                );
               EOF

@@ -36,7 +36,7 @@ spec:
                   message varchar NOT NULL,
                   created_at timestamp NOT NULL DEFAULT NOW()
                 );
-                CREATE TABLE IF NOT EXISTS processed_event
+                CREATE TABLE IF NOT EXISTS processed_request
                 (
                   uid UUID PRIMARY KEY
                 );

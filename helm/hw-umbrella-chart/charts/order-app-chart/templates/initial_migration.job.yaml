@@ -45,4 +45,8 @@ spec:
                   created_at timestamp NOT NULL DEFAULT NOW(),
                   CONSTRAINT uid_idx UNIQUE (uid)
                 );
+                CREATE TABLE IF NOT EXISTS processed_request
+                (
+                  uid UUID PRIMARY KEY
+                );
               EOF
